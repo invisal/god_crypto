@@ -14,7 +14,7 @@ interface RSAOption {
   padding: "oaep" | "pkcs1",
 }
 
-type RSAPublicKeyFormat = [[string, null], [bigint, bigint]]
+type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]]
 
 export class RSA {
   static encrypt(message: Uint8Array | string, key: RSAKey, options?: Partial<RSAOption>): Uint8Array {
@@ -48,9 +48,9 @@ export class RSA {
       const parseKey = ber_simple(ber_decode(base64_to_binary(trimmedKey))) as RSAPublicKeyFormat;
 
       return {
-        length: get_key_size(parseKey[1][0]),
-        n: parseKey[1][0],
-        e: parseKey[1][1],
+        length: get_key_size(parseKey[1][0][0]),
+        n: parseKey[1][0][0],
+        e: parseKey[1][0][1],
       }
     }
 
