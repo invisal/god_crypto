@@ -1,6 +1,6 @@
-import { rsa_oaep_encrypt, rsa_pkcs1_encrypt } from "./internals/rsa.ts";
-import { ber_decode, ber_simple } from "./internals/basic_encoding_rule.ts";
-import { base64_to_binary, get_key_size, str2bytes } from "./internals/helper.ts";
+import { rsa_oaep_encrypt, rsa_pkcs1_encrypt } from "./src/rsa.ts";
+import { ber_decode, ber_simple } from "./src/basic_encoding_rule.ts";
+import { base64_to_binary, get_key_size, str2bytes } from "./src/helper.ts";
 
 interface RSAKey {
   n: bigint;
