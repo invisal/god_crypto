@@ -1,4 +1,4 @@
-import { rsa_oaep_encrypt, rsa_pkcs1_encrypt } from "./src/rsa.ts";
+import { rsa_oaep_encrypt, rsa_pkcs1_encrypt, rsa_oaep_decrypt } from "./src/rsa.ts";
 import { ber_decode, ber_simple } from "./src/basic_encoding_rule.ts";
 import { base64_to_binary, get_key_size, str2bytes } from "./src/helper.ts";
 
@@ -32,6 +32,20 @@ export class RSA {
     throw "Invalid parameters";
   }
 
+  static decrypt(ciper: Uint8Array, key: RSAKey, options?: Partial<RSAOption>): Uint8Array {
+    if (!key.d) throw "Invalid RSA key";
+
+    const computedOptions: RSAOption = { hash: "sha1", padding: "oaep", ...options };
+
+    if (computedOptions.padding === "oaep") {
+      return rsa_oaep_decrypt(key.length, key.n, key.d, ciper, computedOptions.hash);
+    } else if (computedOptions.padding === "pkcs1") {
+      throw "Not implemented yet"
+    }
+
+    throw "Invalid parameters";
+  }
+
   static parseKey(key: string): RSAKey {
     if (key.indexOf("-----BEGIN RSA PRIVATE KEY-----") === 0) {
       const trimmedKey = key.substr(31, key.length - 61);
@@ -39,8 +53,8 @@ export class RSA {
 
       return {
         n: parseKey[1],
-        d: parseKey[2],
-        e: parseKey[3],
+        d: parseKey[3],
+        e: parseKey[2],
         length: get_key_size(parseKey[1])
       }
     } else if (key.indexOf("-----BEGIN PUBLIC KEY-----") === 0) {

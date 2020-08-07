@@ -1,5 +1,5 @@
 import { power_mod } from "./math.ts";
-import { eme_oaep } from "./eme_oaep.ts";
+import { eme_oaep_encode, eme_oaep_decode } from "./eme_oaep.ts";
 import { os2ip, i2osp } from "./primitives.ts";
 import { concat, random_bytes } from "./helper.ts";
 
@@ -22,10 +22,16 @@ export function rsadp(n: bigint, d: bigint, c: bigint): bigint {
 }
 
 export function rsa_oaep_encrypt(bytes: number, n: bigint, e: bigint, m: Uint8Array, algorithm: "sha1" | "sha256") {
-  const em = eme_oaep(new Uint8Array(0), m, bytes, algorithm);
+  const em = eme_oaep_encode(new Uint8Array(0), m, bytes, algorithm);
   const msg = os2ip(em);
   const c = rsaep(n, e, msg);
   return i2osp(c, bytes);
+}
+
+export function rsa_oaep_decrypt(bytes: number, n: bigint, d: bigint, c: Uint8Array, algorithm: "sha1" | "sha256") {
+  const em = rsadp(n, d, os2ip(c));
+  const m = eme_oaep_decode(new Uint8Array(0), i2osp(em, bytes), bytes, algorithm);
+  return m;
 }
 
 export function rsa_pkcs1_encrypt(bytes: number, n: bigint, e: bigint, m: Uint8Array) {
