@@ -10,7 +10,7 @@ type HashAlgorithm = "sha1" | "sha256";
  */
 export function i2osp(x: bigint, length: number): Uint8Array {
   const t = new Uint8Array(length);
-  for(let i = length - 1; i >= 0; i--) {
+  for (let i = length - 1; i >= 0; i--) {
     if (x === 0n) break;
     t[i] = Number(x & 255n);
     x = x >> 8n;
@@ -21,7 +21,7 @@ export function i2osp(x: bigint, length: number): Uint8Array {
 
 export function os2ip(m: Uint8Array): bigint {
   let n = 0n;
-  for(const c of m) n = (n << 8n) + BigInt(c);
+  for (const c of m) n = (n << 8n) + BigInt(c);
   return n;
 }
 
@@ -33,18 +33,24 @@ export function os2ip(m: Uint8Array): bigint {
  * @param length intended length in octets of the mask
  * @param hash Hash function
  */
-export function mgf1(seed: Uint8Array, length: number, hash: HashFunction | HashAlgorithm): Uint8Array {
+export function mgf1(
+  seed: Uint8Array,
+  length: number,
+  hash: HashFunction | HashAlgorithm,
+): Uint8Array {
   let counter = 0n;
   let output: number[] = [];
 
-  while(output.length < length) {
+  while (output.length < length) {
     let h;
     const c = i2osp(counter, 4);
 
-    if (typeof hash === 'function') {
-      h = hash(new Uint8Array([...seed, ...c]))
+    if (typeof hash === "function") {
+      h = hash(new Uint8Array([...seed, ...c]));
     } else {
-      h = new Uint8Array(createHash(hash).update(new Uint8Array([...seed, ...c])).digest());
+      h = new Uint8Array(
+        createHash(hash).update(new Uint8Array([...seed, ...c])).digest(),
+      );
     }
 
     output = [...output, ...h];

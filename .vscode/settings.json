@@ -1,0 +1,5 @@
+{
+    "deno.enableFormatter": true,
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+}

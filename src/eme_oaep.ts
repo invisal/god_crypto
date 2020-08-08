@@ -10,8 +10,15 @@ import { concat, xor, random_bytes } from "./helper.ts";
  * @param k 
  * @param algorithm 
  */
-export function eme_oaep_encode(label: Uint8Array, m: Uint8Array, k: number, algorithm: "sha1" | "sha256"): Uint8Array {
-  const labelHash = new Uint8Array(createHash(algorithm).update(label).digest());
+export function eme_oaep_encode(
+  label: Uint8Array,
+  m: Uint8Array,
+  k: number,
+  algorithm: "sha1" | "sha256",
+): Uint8Array {
+  const labelHash = new Uint8Array(
+    createHash(algorithm).update(label).digest(),
+  );
 
   const ps = new Uint8Array(k - labelHash.length * 2 - 2 - m.length);
   const db = concat(labelHash, ps, [0x01], m);
@@ -24,9 +31,16 @@ export function eme_oaep_encode(label: Uint8Array, m: Uint8Array, k: number, alg
   return concat([0x00], maskedSeed, maskedDb);
 }
 
-export function eme_oaep_decode(label: Uint8Array, c: Uint8Array, k: number, algorithm: "sha1" | "sha256"): Uint8Array {
-  const labelHash = new Uint8Array(createHash(algorithm).update(label).digest());
-  const maskedSeed  = c.slice(1, 1 + labelHash.length);
+export function eme_oaep_decode(
+  label: Uint8Array,
+  c: Uint8Array,
+  k: number,
+  algorithm: "sha1" | "sha256",
+): Uint8Array {
+  const labelHash = new Uint8Array(
+    createHash(algorithm).update(label).digest(),
+  );
+  const maskedSeed = c.slice(1, 1 + labelHash.length);
   const maskedDb = c.slice(1 + labelHash.length);
   const seedMask = mgf1(maskedDb, labelHash.length, algorithm);
   const seed = xor(maskedSeed, seedMask);
@@ -34,7 +48,7 @@ export function eme_oaep_decode(label: Uint8Array, c: Uint8Array, k: number, alg
   const db = xor(maskedDb, dbMask);
 
   let ptr = labelHash.length;
-  while(ptr < db.length && db[ptr] === 0) ptr++;
+  while (ptr < db.length && db[ptr] === 0) ptr++;
 
   return db.slice(ptr + 1);
 }
