@@ -5,11 +5,11 @@ jobs:
     build:
         name: test
         runs-on: ubuntu-16.04
-    steps:
-        - uses: actions/checkout@master
-        - name: Setup deno
-          uses: denolib/setup-deno@master
-          with:
-            deno-version: 1.2.0
-        - name: Run tests
-          run: deno test --allow-read --allow-write
+        steps:
+            - uses: actions/checkout@master
+            - name: Setup deno
+              uses: denolib/setup-deno@master
+              with:
+                deno-version: 1.2.0
+            - name: Run tests
+              run: deno test --allow-read --allow-write
