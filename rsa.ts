@@ -1,4 +1,4 @@
-import { rsa_oaep_encrypt, rsa_pkcs1_encrypt, rsa_oaep_decrypt } from "./src/rsa.ts";
+import { rsa_oaep_encrypt, rsa_pkcs1_encrypt, rsa_oaep_decrypt, rsa_pkcs1_decrypt } from "./src/rsa.ts";
 import { ber_decode, ber_simple } from "./src/basic_encoding_rule.ts";
 import { base64_to_binary, get_key_size, str2bytes } from "./src/helper.ts";
 
@@ -40,7 +40,7 @@ export class RSA {
     if (computedOptions.padding === "oaep") {
       return rsa_oaep_decrypt(key.length, key.n, key.d, ciper, computedOptions.hash);
     } else if (computedOptions.padding === "pkcs1") {
-      throw "Not implemented yet"
+      return rsa_pkcs1_decrypt(key.length, key.n, key.d, ciper);
     }
 
     throw "Invalid parameters";

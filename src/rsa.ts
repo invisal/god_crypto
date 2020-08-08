@@ -40,3 +40,19 @@ export function rsa_pkcs1_encrypt(bytes: number, n: bigint, e: bigint, m: Uint8A
   const c = rsaep(n, e, msg);
   return i2osp(c, bytes);
 }
+
+export function rsa_pkcs1_decrypt(bytes: number, n: bigint, d: bigint, c: Uint8Array) {
+  const em = i2osp(rsadp(n, d, os2ip(c)), bytes);
+
+  if (em[0] !== 0) throw "Decryption error";
+  if (em[1] !== 0x02) throw "Decryption error";
+
+  let psCursor = 2;
+  for(; psCursor < em.length; psCursor++) {
+    if (em[psCursor] === 0x00) break;
+  }
+
+  if (psCursor < 10) throw "Decryption error";
+
+  return em.slice(psCursor + 1);
+}

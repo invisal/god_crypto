@@ -7,7 +7,7 @@ A pure Javascript/Typescript cryptography implementation.
 ## Usage
 
 ```typescript
-import { RSA } from "https://github.com/invisal/god-crypto/raw/master/rsa.ts";
+import { RSA } from "https://deno.land/x/god_crypto/mod.ts";
 
 const publicKey = RSA.parseKey(Deno.readTextFileSync('./public.pem'));
 RSA.encrypt("Hello World", publicKey); // Default OAEP SHA1
