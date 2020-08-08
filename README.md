@@ -1,5 +1,7 @@
 # God Crypto
 
+![test](https://github.com/invisal/god-crypto/workflows/test//badge.svg)
+
 A pure Javascript/Typescript cryptography implementation.
 
 ## Usage
