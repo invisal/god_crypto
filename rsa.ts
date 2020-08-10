@@ -6,6 +6,7 @@ import {
 } from "./src/rsa.ts";
 import { ber_decode, ber_simple } from "./src/basic_encoding_rule.ts";
 import { base64_to_binary, get_key_size, str2bytes } from "./src/helper.ts";
+import { RawBinary } from "./src/binary.ts";
 
 interface RSAKey {
   n: bigint;
@@ -39,15 +40,17 @@ export class RSA {
       : message;
 
     if (computedOptions.padding === "oaep") {
-      return rsa_oaep_encrypt(
+      return new RawBinary(rsa_oaep_encrypt(
         key.length,
         key.n,
         key.e,
         computedMessage,
         computedOptions.hash,
-      );
+      ));
     } else if (computedOptions.padding === "pkcs1") {
-      return rsa_pkcs1_encrypt(key.length, key.n, key.e, computedMessage);
+      return new RawBinary(
+        rsa_pkcs1_encrypt(key.length, key.n, key.e, computedMessage),
+      );
     }
 
     throw "Invalid parameters";
@@ -67,15 +70,15 @@ export class RSA {
     };
 
     if (computedOptions.padding === "oaep") {
-      return rsa_oaep_decrypt(
+      return new RawBinary(rsa_oaep_decrypt(
         key.length,
         key.n,
         key.d,
         ciper,
         computedOptions.hash,
-      );
+      ));
     } else if (computedOptions.padding === "pkcs1") {
-      return rsa_pkcs1_decrypt(key.length, key.n, key.d, ciper);
+      return new RawBinary(rsa_pkcs1_decrypt(key.length, key.n, key.d, ciper));
     }
 
     throw "Invalid parameters";
