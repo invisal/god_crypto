@@ -2,7 +2,23 @@
 
 ![test](https://github.com/invisal/god-crypto/workflows/test//badge.svg)
 
-A pure Javascript/Typescript cryptography implementation.
+A pure Javascript/Typescript cryptography implementation for Deno.
+
+### Roadmap
+
+**Symmetric Ciphesr**
+  - [x] Support RSA
+    - [ ] Generate RSA key
+    - [x] PKCS1 v1.5 Padding
+    - [x] OAEP Padding
+
+**Asymmetric Ciphers**
+  - [ ] Block Ciper Mode
+     - [ ] CTR
+     - [ ] CFB
+     - [ ] OFB
+     - [ ] ECB
+  - [ ] AES (128/192/256 bits)
 
 ## Usage
 
