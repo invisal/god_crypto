@@ -8,6 +8,7 @@ import {
   BlockCiperConfig,
   BlockCiperOperation,
 } from "./block_ciper_operator.ts";
+import { RawBinary } from "./binary.ts";
 
 // deno-fmt-ignore
 const SBOX: any = [
@@ -43,7 +44,7 @@ function rotWord(keySchedule: Uint8Array, column: number) {
 function subWord(keySchedule: Uint8Array, column: number) {
   const offset = column * 4;
   for (let i = 0; i < 4; i++) {
-    keySchedule[offset + i] = SBOX(keySchedule[offset + i]);
+    keySchedule[offset + i] = SBOX[keySchedule[offset + i]];
   }
 }
 
@@ -82,40 +83,19 @@ function keyExpansion(key: Uint8Array) {
 }
 
 interface AESBlockCiperConfig {
-  bits: number;
+  bits?: number;
 }
 
 class AESBlockCiper implements BlockCiper {
   protected keySchedule: Uint8Array;
 
-  constructor(key: Uint8Array, config: AESBlockCiperConfig) {
+  constructor(key: Uint8Array, config?: AESBlockCiperConfig) {
     this.keySchedule = keyExpansion(key);
-  }
-
-  protected ciper(m: Uint8Array) {
-    const nb = 4;
-    const nr = this.keySchedule.length / 16 - 1;
-
-    const state = new Uint8Array(m);
-    this.addRoundKey(state, 0);
-
-    for (let i = 1; i < nr; i++) {
-      this.subBytes(state);
-      this.shiftRow(state);
-      this.mixColumn(state);
-      this.addRoundKey(state, i);
-    }
-
-    this.subBytes(state);
-    this.shiftRow(state);
-    this.addRoundKey(state, nr);
-
-    return state;
   }
 
   protected subBytes(block: Uint8Array) {
     for (let i = 0; i < block.length; i++) {
-      block[i] = SBOX(block[i]);
+      block[i] = SBOX[block[i]];
     }
   }
 
@@ -170,7 +150,24 @@ class AESBlockCiper implements BlockCiper {
   }
 
   encrypt(m: Uint8Array): Uint8Array {
-    return new Uint8Array();
+    const nb = 4;
+    const nr = this.keySchedule.length / 16 - 1;
+
+    const state = new Uint8Array(m);
+    this.addRoundKey(state, 0);
+
+    for (let i = 1; i < nr; i++) {
+      this.subBytes(state);
+      this.shiftRow(state);
+      this.mixColumn(state);
+      this.addRoundKey(state, i);
+    }
+
+    this.subBytes(state);
+    this.shiftRow(state);
+    this.addRoundKey(state, nr);
+
+    return state;
   }
 
   decrypt(m: Uint8Array): Uint8Array {
@@ -180,14 +177,17 @@ class AESBlockCiper implements BlockCiper {
 
 export class AES {
   protected ciper: AESBlockCiper;
-  protected config: AESBlockCiperConfig & BlockCiperConfig;
+  protected config?: AESBlockCiperConfig & BlockCiperConfig;
 
-  constructor(key: Uint8Array, config: AESBlockCiperConfig & BlockCiperConfig) {
+  constructor(
+    key: Uint8Array,
+    config?: AESBlockCiperConfig & BlockCiperConfig,
+  ) {
     this.ciper = new AESBlockCiper(key, config);
     this.config = config;
   }
 
-  encrypt(m: Uint8Array) {
-    BlockCiperOperation.encrypt(m, this.ciper, this.config);
+  encrypt(m: Uint8Array): RawBinary {
+    return BlockCiperOperation.encrypt(m, this.ciper, this.config);
   }
 }
