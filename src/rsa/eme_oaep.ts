@@ -1,6 +1,6 @@
 import { createHash } from "https://deno.land/std/hash/mod.ts";
 import { mgf1 } from "./primitives.ts";
-import { concat, xor, random_bytes } from "./helper.ts";
+import { concat, xor, random_bytes } from "./../helper.ts";
 
 /**
  * https://tools.ietf.org/html/rfc3447#page-10

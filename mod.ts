@@ -1,2 +1,2 @@
-export * from "./rsa.ts";
-export * from "./src/aes.ts";
+export * from "./src/rsa/mod.ts";
+export * from "./src/aes/mod.ts";

@@ -1,7 +1,7 @@
-import { power_mod } from "./math.ts";
+import { power_mod } from "./../math.ts";
 import { eme_oaep_encode, eme_oaep_decode } from "./eme_oaep.ts";
 import { os2ip, i2osp } from "./primitives.ts";
-import { concat, random_bytes } from "./helper.ts";
+import { concat, random_bytes } from "./../helper.ts";
 
 /**
  * @param n public key modulus

@@ -1,5 +1,5 @@
-import { RawBinary } from "./binary.ts";
-import { xor } from "./helper.ts";
+import { RawBinary } from "./../binary.ts";
+import { xor } from "./../helper.ts";
 
 export interface BlockCiperConfig {
   mode?: "ctr" | "cfb" | "ofb" | "ecb" | "cbc";

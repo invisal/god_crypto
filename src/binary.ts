@@ -8,7 +8,7 @@ export class RawBinary extends Uint8Array {
   }
 
   base64(): string {
-    throw "Not implemented";
+    return btoa(String.fromCharCode.apply(null, [...this]));
   }
 
   toString(): string {

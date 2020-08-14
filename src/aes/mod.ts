@@ -8,7 +8,7 @@ import {
   BlockCiperConfig,
   BlockCiperOperation,
 } from "./block_ciper_operator.ts";
-import { RawBinary } from "./binary.ts";
+import { RawBinary } from "./../binary.ts";
 
 // deno-fmt-ignore
 const SBOX: number[] = [

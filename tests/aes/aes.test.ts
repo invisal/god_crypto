@@ -1,7 +1,7 @@
 import {
   assertEquals,
 } from "https://deno.land/std@0.63.0/testing/asserts.ts";
-import { AES } from "./../src/aes.ts";
+import { AES } from "./../../mod.ts";
 
 Deno.test("AES - ECB 128 bits key (Encryption)", () => {
   const key = "Hello World AES!";
