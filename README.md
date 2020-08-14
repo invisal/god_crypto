@@ -6,7 +6,7 @@ A pure Javascript/Typescript cryptography implementation for Deno.
 
 ### Roadmap
 
-**Symmetric Ciphesr**
+**Symmetric Ciphers**
 
 - [x] Support RSA
   - [ ] Generate RSA key
