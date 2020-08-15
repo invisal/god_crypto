@@ -2,26 +2,18 @@
 
 ![test](https://github.com/invisal/god-crypto/workflows/test//badge.svg)
 
-A pure Javascript/Typescript cryptography implementation for Deno.
+A pure Javascript/Typescript cryptography implementation for Deno. We will try to use WebCrypto if available, then fallback to WebAssembly implementation if available, otherwise, we will use pure Javascript implementation.
 
-### Roadmap
+|                                    | WebCrypto | WebAssembly | Javascript |
+| ---------------------------------- | :-------: | :---------: | :--------: |
+| **AES**                            |           |             |            |
+| &nbsp;&nbsp;&nbsp;`AES-CBC`        |    ✔️     |     ❌      |     ✔️     |
+| &nbsp;&nbsp;&nbsp;`AES-ECB`        |    ❌     |     ❌      |     ✔️     |
+| **RSA**                            |           |             |            |
+| &nbsp;&nbsp;&nbsp;`RSA-PKCS1 v1.5` |    ❌     |     ❌      |     ✔️     |
+| &nbsp;&nbsp;&nbsp;`RSA-OAEP`       |    ❌     |     ❌      |     ✔️     |
 
-**Symmetric Ciphers**
-
-- [x] Support RSA
-  - [ ] Generate RSA key
-  - [x] PKCS1 v1.5 Padding
-  - [x] OAEP Padding
-
-**Asymmetric Ciphers**
-
-- [ ] Block Ciper Mode
-  - [ ] CTR
-  - [ ] CFB
-  - [ ] OFB
-  - [x] ECB
-  - [x] CBC
-- [x] AES (128/192/256 bits)
+More algorithm supports is one the way
 
 ---
 
@@ -37,11 +29,11 @@ const aes = new AES("Hello World AES!", {
   iv: "random 16byte iv",
 });
 
-const ciper = aes.encrypt("This is AES-128-CBC. It works.");
+const ciper = await aes.encrypt("This is AES-128-CBC. It works.");
 console.log(ciper.hex());
 // 41393374609eaee39fbe57c96b43a9da0d547c290501be50f983ecaac6c5fd1c
 
-const plain = aes.decrypt(ciper);
+const plain = await aes.decrypt(ciper);
 console.log(plain.toString());
 // This is AES-128-CBC. It works.
 ```

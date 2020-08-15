@@ -1,4 +1,4 @@
-import { createHash } from "https://deno.land/std/hash/mod.ts";
+import { createHash } from "./../hash.ts";
 import { mgf1 } from "./primitives.ts";
 import { concat, xor, random_bytes } from "./../helper.ts";
 

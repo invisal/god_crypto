@@ -1,4 +1,4 @@
-import { createHash } from "https://deno.land/std/hash/mod.ts";
+import { createHash } from "./../hash.ts";
 
 type HashFunction = (b: Uint8Array) => Uint8Array;
 type HashAlgorithm = "sha1" | "sha256";
