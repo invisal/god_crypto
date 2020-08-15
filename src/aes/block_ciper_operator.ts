@@ -1,11 +1,6 @@
 import { RawBinary } from "./../binary.ts";
 import { xor } from "./../helper.ts";
-
-export interface BlockCiperConfig {
-  mode?: "ctr" | "cfb" | "ofb" | "ecb" | "cbc";
-  padding?: "pkcs5";
-  iv?: Uint8Array | string;
-}
+import { BlockCiperConfig } from "./common.ts";
 
 export abstract class BlockCiper {
   abstract encrypt(m: Uint8Array): Uint8Array;
@@ -21,7 +16,7 @@ class ECB {
       output.set(ciper.encrypt(m.slice(i, i + blockSize)), i);
     }
 
-    return new RawBinary(output);
+    return output;
   }
 
   static decrypt(m: Uint8Array, ciper: BlockCiper, blockSize: number) {
@@ -32,7 +27,7 @@ class ECB {
       output.set(ciper.decrypt(m.slice(i, i + blockSize)), i);
     }
 
-    return new RawBinary(output);
+    return output;
   }
 }
 
@@ -60,7 +55,7 @@ class CBC {
       output.set(prev, i);
     }
 
-    return new RawBinary(output);
+    return output;
   }
 
   static decrypt(
@@ -87,7 +82,7 @@ class CBC {
       prev = t;
     }
 
-    return new RawBinary(output);
+    return output;
   }
 }
 
@@ -140,6 +135,6 @@ export class BlockCiperOperation {
       output = CBC.decrypt(m, ciper, 16, computedConfig.iv);
     } else throw "Not implemented";
 
-    return new RawBinary(unpad(output));
+    return unpad(output);
   }
 }
