@@ -37,8 +37,6 @@ export class WebCryptoAES implements AESBase {
     const key = await this.loadKey();
     const option = { name: "AES-CBC", iv: this.config.iv };
 
-    console.log(this.config.iv);
-
     // @ts-ignore
     const data = await crypto.subtle.encrypt(option, key, m);
     return new Uint8Array(data);

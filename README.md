@@ -11,7 +11,7 @@ A pure Javascript/Typescript cryptography implementation for Deno. We will try t
 | &nbsp;&nbsp;&nbsp;`AES-ECB`        |    ❌     |     ❌      |     ✔️     |
 | **RSA**                            |           |             |            |
 | &nbsp;&nbsp;&nbsp;`RSA-PKCS1 v1.5` |    ❌     |     ❌      |     ✔️     |
-| &nbsp;&nbsp;&nbsp;`RSA-OAEP`       |    ❌     |     ❌      |     ✔️     |
+| &nbsp;&nbsp;&nbsp;`RSA-OAEP`       |    ✔️     |     ❌      |     ✔️     |
 
 More algorithm supports is one the way
 
@@ -56,17 +56,15 @@ new AES(key, {
 import { RSA } from "https://deno.land/x/god_crypto/mod.ts";
 
 const publicKey = RSA.parseKey(Deno.readTextFileSync("./public.pem"));
-RSA.encrypt("Hello World", publicKey); // Default OAEP SHA1
-RSA.encrypt("Hello World", publicKey, { padding: "oaep", hash: "sha256" });
-RSA.encrypt("Hello World", publicKey, { padding: "pkcs1" });
+const ciper = await new RSA(publicKey).encrypt("Hello World");
+console.log(ciper.base64());
 
 const privateKey = RSA.parseKey(Deno.readTextFileSync("./private.pem"));
-RSA.decrypt(ciperText, privateKey);
+const plain = await new RSA(privateKey).decrypt(ciper);
+console.log(plain.toString());
+
+// More examples:
+new RSA(publicKey);
+new RSA(publicKey, { padding: "oaep", hash: "sha256" });
+new RSA(publicKey, { padding: "pkcs1" });
 ```
-
----
-
-## References
-
-- [Announcing the Advanced Encryption Standard (AES)](https://csrc.nist.gov/csrc/media/publications/fips/197/final/documents/fips-197.pdf)
-- [Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1](https://tools.ietf.org/html/rfc3447)

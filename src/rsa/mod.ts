@@ -1,87 +1,41 @@
-import {
-  rsa_oaep_encrypt,
-  rsa_pkcs1_encrypt,
-  rsa_oaep_decrypt,
-  rsa_pkcs1_decrypt,
-} from "./rsa.ts";
+import { RSAKey, RSAOption } from "./common.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { base64_to_binary, get_key_size, str2bytes } from "./../helper.ts";
-import { RawBinary } from "./../binary.ts";
-
-interface RSAKey {
-  n: bigint;
-  e?: bigint;
-  d?: bigint;
-  length: number;
-}
-
-interface RSAOption {
-  hash: "sha1" | "sha256";
-  padding: "oaep" | "pkcs1";
-}
+import { RSABase } from "./rsa_base.ts";
+import { WebCryptoRSA } from "./rsa_wc.ts";
+import { PureRSA } from "./rsa_js.ts";
+import { RawBinary } from "../binary.ts";
 
 type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]];
 
-export class RSA {
-  static encrypt(
-    message: Uint8Array | string,
-    key: RSAKey,
-    options?: Partial<RSAOption>,
-  ): Uint8Array {
-    if (!key.e) throw "Invalid RSA key";
+function computeMessage(m: Uint8Array | string) {
+  return typeof m === "string" ? new TextEncoder().encode(m) : m;
+}
 
-    const computedOptions: RSAOption = {
+export class RSA {
+  options: RSAOption;
+  lib: RSABase;
+
+  constructor(key: RSAKey, options?: Partial<RSAOption>) {
+    this.options = {
       hash: "sha1",
       padding: "oaep",
       ...options,
     };
-    const computedMessage = typeof message === "string"
-      ? str2bytes(message)
-      : message;
 
-    if (computedOptions.padding === "oaep") {
-      return new RawBinary(rsa_oaep_encrypt(
-        key.length,
-        key.n,
-        key.e,
-        computedMessage,
-        computedOptions.hash,
-      ));
-    } else if (computedOptions.padding === "pkcs1") {
-      return new RawBinary(
-        rsa_pkcs1_encrypt(key.length, key.n, key.e, computedMessage),
-      );
+    if (crypto.subtle && this.options.padding === "oaep") {
+      this.lib = new WebCryptoRSA(key, this.options);
+    } else {
+      this.lib = new PureRSA(key, this.options);
     }
-
-    throw "Invalid parameters";
   }
 
-  static decrypt(
-    ciper: Uint8Array,
-    key: RSAKey,
-    options?: Partial<RSAOption>,
-  ): Uint8Array {
-    if (!key.d) throw "Invalid RSA key";
+  async encrypt(m: Uint8Array | string) {
+    return new RawBinary(await this.lib.encrypt(computeMessage(m)));
+  }
 
-    const computedOptions: RSAOption = {
-      hash: "sha1",
-      padding: "oaep",
-      ...options,
-    };
-
-    if (computedOptions.padding === "oaep") {
-      return new RawBinary(rsa_oaep_decrypt(
-        key.length,
-        key.n,
-        key.d,
-        ciper,
-        computedOptions.hash,
-      ));
-    } else if (computedOptions.padding === "pkcs1") {
-      return new RawBinary(rsa_pkcs1_decrypt(key.length, key.n, key.d, ciper));
-    }
-
-    throw "Invalid parameters";
+  async decrypt(m: Uint8Array | string) {
+    return new RawBinary(await this.lib.decrypt(computeMessage(m)));
   }
 
   static parseKey(key: string): RSAKey {
@@ -95,6 +49,11 @@ export class RSA {
         n: parseKey[1],
         d: parseKey[3],
         e: parseKey[2],
+        p: parseKey[4],
+        q: parseKey[5],
+        dp: parseKey[6],
+        dq: parseKey[7],
+        qi: parseKey[8],
         length: get_key_size(parseKey[1]),
       };
     } else if (key.indexOf("-----BEGIN PUBLIC KEY-----") === 0) {
