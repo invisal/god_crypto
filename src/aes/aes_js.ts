@@ -301,11 +301,12 @@ export class PureAES implements AESBase {
     return BlockCiperOperation.encrypt(
       m,
       this.ciper,
+      16,
       this.config,
     );
   }
 
   async decrypt(m: Uint8Array): Promise<Uint8Array> {
-    return BlockCiperOperation.decrypt(m, this.ciper, this.config);
+    return BlockCiperOperation.decrypt(m, this.ciper, 16, this.config);
   }
 }

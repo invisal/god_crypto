@@ -2,6 +2,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.63.0/testing/asserts.ts";
 import { AES } from "./../../mod.ts";
+import { RawBinary } from "../../src/binary.ts";
 
 Deno.test("AES - ECB 128 bits key (Encryption)", async () => {
   const key = "Hello World AES!";
@@ -51,4 +52,27 @@ Deno.test("AES - CBC 128 bits key (Decryption)", async () => {
     (await aes.decrypt(await aes.encrypt(plain))).toString(),
     "This is AES-128-CBC. It works.",
   );
+});
+
+Deno.test("AES - CFB 128 bits key (Encryption)", async () => {
+  const key = "Hello World AES!";
+  const plain = "This is AES-128-ECB. It works.";
+  const iv = new Uint8Array(16);
+
+  const aes = new AES(key, { mode: "cfb", iv });
+
+  assertEquals(
+    (await aes.encrypt(plain)).base64(),
+    "L9GTd247ICqw3pVp0rcFeAxG8O0SbI6SazHIuY65",
+  );
+});
+
+Deno.test("AES - CFB 128 bits key (Decryption)", async () => {
+  const key = "Hello World AES!";
+  const plain = "This is AES-128-CFB. It works.";
+  const iv = "random 16byte iv";
+
+  const aes = new AES(key, { mode: "cfb", iv });
+
+  assertEquals((await aes.decrypt(await aes.encrypt(plain))).toString(), plain);
 });

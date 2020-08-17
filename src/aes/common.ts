@@ -4,7 +4,7 @@ export interface BlockCiperConfig {
   iv?: Uint8Array | string;
 }
 
-type AESBlockMode = "cbc" | "ecb";
+type AESBlockMode = "cbc" | "ecb" | "cfb";
 
 export interface AESOption {
   mode: AESBlockMode;

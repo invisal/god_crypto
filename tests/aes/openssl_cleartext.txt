@@ -1,0 +1,1 @@
+This is cleartext that will be used to encrypt with OpenSSL.

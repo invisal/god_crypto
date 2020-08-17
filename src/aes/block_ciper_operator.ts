@@ -1,4 +1,3 @@
-import { RawBinary } from "./../binary.ts";
 import { xor } from "./../helper.ts";
 import { BlockCiperConfig } from "./common.ts";
 
@@ -31,24 +30,52 @@ class ECB {
   }
 }
 
+class CFB {
+  static encrypt(
+    m: Uint8Array,
+    ciper: BlockCiper,
+    blockSize: number,
+    iv: Uint8Array,
+  ) {
+    const output = new Uint8Array(m.length);
+    let prev = iv;
+
+    for (let i = 0; i < m.length; i += blockSize) {
+      prev = xor(m.slice(i, i + blockSize), ciper.encrypt(prev));
+      output.set(prev, i);
+    }
+
+    return output;
+  }
+
+  static decrypt(
+    m: Uint8Array,
+    ciper: BlockCiper,
+    blockSize: number,
+    iv: Uint8Array,
+  ) {
+    const output = new Uint8Array(m.length);
+    let prev = iv;
+
+    for (let i = 0; i < m.length; i += blockSize) {
+      const t = m.slice(i, Math.min(i + blockSize, m.length));
+      output.set(xor(t, ciper.encrypt(prev)), i);
+      prev = t;
+    }
+
+    return output;
+  }
+}
+
 class CBC {
   static encrypt(
     m: Uint8Array,
     ciper: BlockCiper,
     blockSize: number,
-    iv?: Uint8Array | string,
+    iv: Uint8Array,
   ) {
-    if (!iv) throw "Please provide IV value";
-    if (m.length % blockSize !== 0) throw "Message is not properly padded";
-
-    const computedIV = typeof iv === "string"
-      ? new TextEncoder().encode(iv)
-      : iv;
-
-    if (computedIV?.length !== 16) throw "Invalid IV length";
-
     const output = new Uint8Array(m.length);
-    let prev = computedIV;
+    let prev = iv;
 
     for (let i = 0; i < m.length; i += blockSize) {
       prev = ciper.encrypt(xor(m.slice(i, i + blockSize), prev));
@@ -62,19 +89,10 @@ class CBC {
     m: Uint8Array,
     ciper: BlockCiper,
     blockSize: number,
-    iv?: Uint8Array | string,
+    iv: Uint8Array,
   ) {
-    if (!iv) throw "Please provide IV value";
-    if (m.length % blockSize !== 0) throw "Message is not properly padded";
-
-    const computedIV = typeof iv === "string"
-      ? new TextEncoder().encode(iv)
-      : iv;
-
-    if (computedIV?.length !== 16) throw "Invalid IV length";
-
     const output = new Uint8Array(m.length);
-    let prev = computedIV;
+    let prev = iv;
 
     for (let i = 0; i < m.length; i += blockSize) {
       const t = m.slice(i, i + blockSize);
@@ -103,36 +121,60 @@ function unpad(m: Uint8Array): Uint8Array {
 }
 
 export class BlockCiperOperation {
-  static encrypt(m: Uint8Array, ciper: BlockCiper, config?: BlockCiperConfig) {
+  static encrypt(
+    m: Uint8Array,
+    ciper: BlockCiper,
+    blockSize: number,
+    config?: BlockCiperConfig,
+  ) {
     const computedConfig: BlockCiperConfig = {
       mode: "cbc",
       padding: "pkcs5",
       ...config,
     };
 
-    // PKCS5 Padding
-    const paddedMessage = pad(m);
+    // Compute IV
+    const computedIV = typeof computedConfig.iv === "string"
+      ? new TextEncoder().encode(computedConfig.iv)
+      : computedConfig.iv;
+
+    if (blockSize !== computedIV?.length) throw "Invalid IV size";
 
     if (computedConfig.mode === "ecb") {
-      return ECB.encrypt(paddedMessage, ciper, 16);
+      return ECB.encrypt(pad(m), ciper, 16);
     } else if (computedConfig.mode === "cbc") {
-      return CBC.encrypt(paddedMessage, ciper, 16, computedConfig.iv);
+      return CBC.encrypt(pad(m), ciper, 16, computedIV);
+    } else if (computedConfig.mode === "cfb") {
+      return CFB.encrypt(m, ciper, 16, computedIV);
     } else throw "Not implemented";
   }
 
-  static decrypt(m: Uint8Array, ciper: BlockCiper, config?: BlockCiperConfig) {
+  static decrypt(
+    m: Uint8Array,
+    ciper: BlockCiper,
+    blockSize: number,
+    config?: BlockCiperConfig,
+  ) {
     const computedConfig: BlockCiperConfig = {
       mode: "cbc",
       padding: "pkcs5",
       ...config,
     };
 
-    let output;
+    // Compute IV
+    const computedIV = typeof computedConfig.iv === "string"
+      ? new TextEncoder().encode(computedConfig.iv)
+      : computedConfig.iv;
 
+    if (blockSize !== computedIV?.length) throw "Invalid IV size";
+
+    let output;
     if (computedConfig.mode === "ecb") {
       output = ECB.decrypt(m, ciper, 16);
     } else if (computedConfig.mode === "cbc") {
-      output = CBC.decrypt(m, ciper, 16, computedConfig.iv);
+      output = CBC.decrypt(m, ciper, 16, computedIV);
+    } else if (computedConfig.mode === "cfb") {
+      return CFB.decrypt(m, ciper, 16, computedIV);
     } else throw "Not implemented";
 
     return unpad(output);

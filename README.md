@@ -8,6 +8,7 @@ A pure Javascript/Typescript cryptography implementation for Deno. We will try t
 | ---------------------------------- | :-------: | :---------: | :--------: |
 | **AES**                            |           |             |            |
 | &nbsp;&nbsp;&nbsp;`AES-CBC`        |    ✔️     |     ❌      |     ✔️     |
+| &nbsp;&nbsp;&nbsp;`AES-CFB`        |    ❌     |     ❌      |     ✔️     |
 | &nbsp;&nbsp;&nbsp;`AES-ECB`        |    ❌     |     ❌      |     ✔️     |
 | **RSA**                            |           |             |            |
 | &nbsp;&nbsp;&nbsp;`RSA-PKCS1 v1.5` |    ❌     |     ❌      |     ✔️     |
