@@ -1,8 +1,11 @@
 # God Crypto
+<img src="https://repository-images.githubusercontent.com/285578879/a09a9880-e179-11ea-9b30-42d45ee638c1" width="500px">
 
 ![test](https://github.com/invisal/god-crypto/workflows/test//badge.svg)
 
+
 A pure Javascript/Typescript cryptography implementation for Deno. We will try to use WebCrypto if available, then fallback to WebAssembly implementation if available, otherwise, we will use pure Javascript implementation.
+
 
 |                                    | WebCrypto | WebAssembly | Javascript |
 | ---------------------------------- | :-------: | :---------: | :--------: |
