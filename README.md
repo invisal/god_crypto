@@ -13,10 +13,20 @@ A pure Javascript/Typescript cryptography implementation for Deno. We will try t
 | **RSA**                            |           |             |            |
 | &nbsp;&nbsp;&nbsp;`RSA-PKCS1 v1.5` |    ❌     |     ❌      |     ✔️     |
 | &nbsp;&nbsp;&nbsp;`RSA-OAEP`       |    ✔️     |     ❌      |     ✔️     |
+| **HMAC**                           |    ❌     |     ❌      |     ✔️     |
 
 More algorithm supports is one the way
 
 ---
+
+## HMAC
+
+**Example**
+
+```typescript
+import { hmac } from "https://deno.land/x/god_crypto@v.1.1.0/mod.ts";
+hmac("sha1", "secret", "Hello World").hex(); // 858da8837b87f04b052c0f6e954c3f7bbe081164
+```
 
 ## AES
 
