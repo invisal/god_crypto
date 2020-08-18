@@ -23,15 +23,15 @@ More algorithm supports is one the way
 **Example**
 
 ```typescript
-import { AES } from "https://deno.land/x/god_crypto/mod.ts";
+import { AES } from "https://deno.land/x/god_crypto@v.1.1.0/mod.ts";
 
 const aes = new AES("Hello World AES!", {
   mode: "cbc",
   iv: "random 16byte iv",
 });
 
-const ciper = await aes.encrypt("This is AES-128-CBC. It works.");
-console.log(ciper.hex());
+const cipher = await aes.encrypt("This is AES-128-CBC. It works.");
+console.log(cipher.hex());
 // 41393374609eaee39fbe57c96b43a9da0d547c290501be50f983ecaac6c5fd1c
 
 const plain = await aes.decrypt(ciper);
@@ -54,18 +54,39 @@ new AES(key, {
 ## RSA
 
 ```typescript
-import { RSA } from "https://deno.land/x/god_crypto/mod.ts";
+import { RSA } from "https://deno.land/x/god_crypto@v.1.1.0/mod.ts";
 
 const publicKey = RSA.parseKey(Deno.readTextFileSync("./public.pem"));
-const ciper = await new RSA(publicKey).encrypt("Hello World");
+const cipher = await new RSA(publicKey).encrypt("Hello World");
 console.log(ciper.base64());
 
 const privateKey = RSA.parseKey(Deno.readTextFileSync("./private.pem"));
-const plain = await new RSA(privateKey).decrypt(ciper);
+const plain = await new RSA(privateKey).decrypt(cipher);
 console.log(plain.toString());
 
 // More examples:
 new RSA(publicKey);
 new RSA(publicKey, { padding: "oaep", hash: "sha256" });
 new RSA(publicKey, { padding: "pkcs1" });
+```
+
+## Other Ultility
+
+We also provide encoding ultility.
+
+```typescript
+import { encode } from "https://deno.land/x/god_crypto@v.1.1.0/mod.ts";
+
+// Converting hex to string
+encode.hex("676f645f63727970746f20726f636b7321").toString(); // "god_crypto rocks!"
+
+// Converting hex to base64
+encode.hex("676f645f63727970746f20726f636b7321").base64(); // Z29kX2NyeXB0byByb2NrcyE=
+
+// Converting base64 to hex
+encode.base64("Z29kX2NyeXB0byByb2NrcyE=").hex(); // 676f645f63727970746f20726f636b7321
+
+// Convert hex/base64 to Uint8Array
+encode.base64("Z29kX2NyeXB0byByb2NrcyE="); // Uint8Array object
+encode.hex("676f645f63727970746f20726f636b7321"); // Uint8Array object
 ```

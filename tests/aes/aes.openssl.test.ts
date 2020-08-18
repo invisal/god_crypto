@@ -2,7 +2,6 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.63.0/testing/asserts.ts";
 import { AES } from "./../../mod.ts";
-import { RawBinary } from "../../src/binary.ts";
 
 Deno.test("AES - Decryption AES-128-CBC (OpenSSL)", async () => {
   // openssl enc -aes-128-cbc -in tests/aes/openssl_cleartext.txt -K 48656c6c6f20576f726c642041455321 -iv 72616e646f6d20313662797465206976 -out tests/aes/openssl_128_cbc.txt
