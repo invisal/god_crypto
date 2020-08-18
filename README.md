@@ -70,9 +70,9 @@ new RSA(publicKey, { padding: "oaep", hash: "sha256" });
 new RSA(publicKey, { padding: "pkcs1" });
 ```
 
-## Other Ultility
+## Other Utility
 
-We also provide encoding ultility.
+We also provide encoding utility.
 
 ```typescript
 import { encode } from "https://deno.land/x/god_crypto@v.1.1.0/mod.ts";
