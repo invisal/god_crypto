@@ -10,12 +10,22 @@ A pure Javascript/Typescript cryptography implementation for Deno. We will try t
 
 ### [AES](https://github.com/invisal/god_crypto/wiki/AES) | [RSA](https://github.com/invisal/god_crypto/wiki/RSA) | [HMAC](https://github.com/invisal/god_crypto/wiki/HMAC) | [TOTP](https://github.com/invisal/god_crypto/wiki/TOTP)
 
-<br />
-Click here for complete document:
+Click here for complete document: [Complete Documents](https://github.com/invisal/god_crypto/wiki)
 
-- [Complete Documents](https://github.com/invisal/god_crypto/wiki)
+## Modules
 
-<br />
+You can choose to include the whole `god_crypto` implementation or just include module that you need.
+
+```
+// Load everything
+import { AES, RSA, TOTP, hmac, encode } from "https://deno.land/x/god_crypto/mod.ts";
+
+// Load what you need
+import { AES }  from "https://deno.land/x/god_crypto/aes.ts";
+import { RSA }  from "https://deno.land/x/god_crypto/rsa.ts";
+import { TOTP } from "https://deno.land/x/god_crypto/otp.ts";
+import { hmac } from "https://deno.land/x/god_crypto/hmac.ts";
+```
 
 ---
 
