@@ -6,6 +6,8 @@
 
 A pure Javascript/Typescript cryptography implementation for Deno. We will try to use WebCrypto if available, then fallback to WebAssembly implementation if available, otherwise, we will use pure Javascript implementation.
 
+> **NOTE:** `god_crypto` is in very early stage of development. There will be a lot of change and it is not recommended for production.
+
 ## References
 
 ### [AES](https://github.com/invisal/god_crypto/wiki/AES) | [RSA](https://github.com/invisal/god_crypto/wiki/RSA) | [HMAC](https://github.com/invisal/god_crypto/wiki/HMAC) | [TOTP](https://github.com/invisal/god_crypto/wiki/TOTP)
