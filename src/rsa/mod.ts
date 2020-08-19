@@ -1,7 +1,6 @@
-import { RSAKey, RSAOption } from "./common.ts";
+import { RSAKey, RSAOption, RSASignOption } from "./common.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { base64_to_binary, get_key_size, str2bytes } from "./../helper.ts";
-import { RSABase } from "./rsa_base.ts";
 import { WebCryptoRSA } from "./rsa_wc.ts";
 import { PureRSA } from "./rsa_js.ts";
 import { RawBinary } from "../binary.ts";
@@ -12,30 +11,68 @@ function computeMessage(m: Uint8Array | string) {
   return typeof m === "string" ? new TextEncoder().encode(m) : m;
 }
 
-export class RSA {
-  options: RSAOption;
-  lib: RSABase;
+function computeOption(options?: Partial<RSAOption>): RSAOption {
+  return {
+    hash: "sha1",
+    padding: "oaep",
+    ...options,
+  };
+}
 
-  constructor(key: RSAKey, options?: Partial<RSAOption>) {
-    this.options = {
-      hash: "sha1",
-      padding: "oaep",
+export class RSA {
+  protected key: RSAKey;
+
+  constructor(key: RSAKey) {
+    this.key = key;
+  }
+
+  async encrypt(
+    m: Uint8Array | string,
+    options?: Partial<RSAOption>,
+  ) {
+    const computedOption = computeOption(options);
+
+    const func = WebCryptoRSA.isSupported(computedOption)
+      ? WebCryptoRSA.encrypt
+      : PureRSA.encrypt;
+
+    return new RawBinary(
+      await func(this.key, computeMessage(m), computedOption),
+    );
+  }
+
+  async decrypt(
+    m: Uint8Array,
+    options?: Partial<RSAOption>,
+  ) {
+    const computedOption = computeOption(options);
+
+    const func = WebCryptoRSA.isSupported(computedOption)
+      ? WebCryptoRSA.decrypt
+      : PureRSA.decrypt;
+
+    return new RawBinary(
+      await func(this.key, m, computedOption),
+    );
+  }
+
+  async verify(
+    signature: Uint8Array,
+    message: Uint8Array | string,
+    options?: Partial<RSASignOption>,
+  ): Promise<boolean> {
+    const computedOption: RSASignOption = {
       ...options,
+      algorithm: "rsassa-pkcs1-v1_5",
+      hash: "sha256",
     };
 
-    if (crypto.subtle && this.options.padding === "oaep") {
-      this.lib = new WebCryptoRSA(key, this.options);
-    } else {
-      this.lib = new PureRSA(key, this.options);
-    }
-  }
-
-  async encrypt(m: Uint8Array | string) {
-    return new RawBinary(await this.lib.encrypt(computeMessage(m)));
-  }
-
-  async decrypt(m: Uint8Array | string) {
-    return new RawBinary(await this.lib.decrypt(computeMessage(m)));
+    return await PureRSA.verify(
+      this.key,
+      signature,
+      computeMessage(message),
+      computedOption,
+    );
   }
 
   static parseKey(key: string): RSAKey {

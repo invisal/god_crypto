@@ -28,19 +28,21 @@ Deno.test("Decrypt RSA PKCS1 v1.5", async () => {
   const privateKeyRaw = Deno.readTextFileSync("./tests/rsa/private.pem");
   const ciperText = Deno.readFileSync("./tests/rsa/ciper_pkcs1.txt");
   const privateKey = RSA.parseKey(privateKeyRaw);
-  const rsa = new RSA(privateKey, { padding: "pkcs1" });
+  const rsa = new RSA(privateKey);
 
-  const plainText = (await rsa.decrypt(ciperText)).toString();
+  const plainText = (await rsa.decrypt(ciperText, { padding: "pkcs1" }))
+    .toString();
   assertEquals(plainText, "Hello World");
 });
 
 Deno.test("Encrypt RSA PKCS1 v1.5", async () => {
   const privateKeyRaw = Deno.readTextFileSync("./tests/rsa/private.pem");
   const privateKey = RSA.parseKey(privateKeyRaw);
-  const rsa = new RSA(privateKey, { padding: "pkcs1" });
+  const rsa = new RSA(privateKey);
 
-  const ciperText = await rsa.encrypt("Hello World");
-  const plainText = (await rsa.decrypt(ciperText)).toString();
+  const ciperText = await rsa.encrypt("Hello World", { padding: "pkcs1" });
+  const plainText = (await rsa.decrypt(ciperText, { padding: "pkcs1" }))
+    .toString();
 
   assertEquals(plainText, "Hello World");
 });

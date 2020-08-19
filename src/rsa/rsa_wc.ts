@@ -1,7 +1,8 @@
-import { RSABase } from "./rsa_base.ts";
 import { RSAKey, RSAOption } from "./common.ts";
 
-function big_base64(m: bigint) {
+function big_base64(m?: bigint) {
+  if (m === undefined) return undefined;
+
   const bytes = [];
 
   while (m > 0n) {
@@ -16,7 +17,52 @@ function big_base64(m: bigint) {
   return a;
 }
 
-export class WebCryptoRSA implements RSABase {
+function getHashFunctionName(hash: string) {
+  if (hash === "sha1") return "SHA-1";
+  if (hash === "sha256") return "SHA-256";
+  return "";
+}
+
+async function createWebCryptoKey(
+  key: RSAKey,
+  usage: string,
+  options: RSAOption,
+) {
+  let jwk: any = {
+    kty: "RSA",
+    n: big_base64(key.n),
+    ext: true,
+  };
+
+  if (usage === "encrypt") {
+    jwk = { ...jwk, e: big_base64(key.e) };
+  } else if (usage === "decrypt") {
+    jwk = {
+      ...jwk,
+      d: big_base64(key.d),
+      e: big_base64(key.e),
+      p: big_base64(key.p),
+      q: big_base64(key.q),
+      dp: big_base64(key.dp),
+      dq: big_base64(key.dq),
+      qi: big_base64(key.qi),
+    };
+  }
+
+  // @ts-ignore
+  return await crypto.subtle.importKey(
+    "jwk",
+    jwk,
+    {
+      name: "RSA-OAEP",
+      hash: { name: getHashFunctionName(options.hash) },
+    },
+    false,
+    [usage],
+  );
+}
+
+export class WebCryptoRSA {
   key: RSAKey;
   options: RSAOption;
   encryptedKey: any = null;
@@ -27,87 +73,26 @@ export class WebCryptoRSA implements RSABase {
     this.options = options;
   }
 
-  protected getHashFunctionName() {
-    if (this.options.hash === "sha1") return "SHA-1";
-    if (this.options.hash === "sha256") return "SHA-256";
-    return "";
+  static isSupported(options: RSAOption) {
+    if (!crypto.subtle) return false;
+    if (options.padding !== "oaep") return false;
+    return true;
   }
 
-  protected async loadKeyForDecrypt() {
-    if (!this.key.e) return null;
-    if (!this.key.d) return null;
-
-    if (this.decryptedKey === null) {
-      const jwk = {
-        kty: "RSA",
-        n: big_base64(this.key.n),
-        d: big_base64(this.key.d),
-        e: big_base64(this.key.e),
-        p: this.key.p ? big_base64(this.key.p) : undefined,
-        q: this.key.q ? big_base64(this.key.q) : undefined,
-        dp: this.key.dp ? big_base64(this.key.dp) : undefined,
-        dq: this.key.dq ? big_base64(this.key.dq) : undefined,
-        qi: this.key.qi ? big_base64(this.key.qi) : undefined,
-        ext: true,
-      };
-
-      // @ts-ignore
-      this.decryptedKey = await crypto.subtle.importKey(
-        "jwk",
-        jwk,
-        {
-          name: "RSA-OAEP",
-          hash: { name: this.getHashFunctionName() },
-        },
-        false,
-        ["decrypt"],
-      );
-    }
-
-    return this.decryptedKey;
-  }
-
-  protected async loadKeyForEncrypt() {
-    if (!this.key.e) return null;
-
-    if (this.encryptedKey === null) {
-      const jwk = {
-        kty: "RSA",
-        e: big_base64(this.key.e),
-        n: big_base64(this.key.n),
-        ext: true,
-      };
-
-      // @ts-ignore
-      this.encryptedKey = await crypto.subtle.importKey(
-        "jwk",
-        jwk,
-        {
-          name: "RSA-OAEP",
-          hash: { name: this.getHashFunctionName() },
-        },
-        false,
-        ["encrypt"],
-      );
-    }
-
-    return this.encryptedKey;
-  }
-
-  async encrypt(m: Uint8Array) {
+  static async encrypt(key: RSAKey, m: Uint8Array, options: RSAOption) {
     // @ts-ignore
     return await crypto.subtle.encrypt(
       { name: "RSA-OAEP" },
-      await this.loadKeyForEncrypt(),
+      await createWebCryptoKey(key, "encrypt", options),
       m,
     );
   }
 
-  async decrypt(m: Uint8Array) {
+  static async decrypt(key: RSAKey, m: Uint8Array, options: RSAOption) {
     // @ts-ignore
     return await crypto.subtle.decrypt(
       { name: "RSA-OAEP" },
-      await this.loadKeyForDecrypt(),
+      await createWebCryptoKey(key, "decrypt", options),
       m,
     );
   }

@@ -3,57 +3,67 @@ import {
   rsa_pkcs1_encrypt,
   rsa_oaep_decrypt,
   rsa_pkcs1_decrypt,
+  rsa_pkcs1_verify,
 } from "./rsa_internal.ts";
 import { RawBinary } from "./../binary.ts";
-import { RSAKey, RSAOption } from "./common.ts";
-import { RSABase } from "./rsa_base.ts";
+import { RSAKey, RSAOption, RSASignOption } from "./common.ts";
+import { createHash } from "../hash.ts";
 
-export class PureRSA implements RSABase {
-  key: RSAKey;
-  options: RSAOption;
+export class PureRSA {
+  static async encrypt(key: RSAKey, message: Uint8Array, options: RSAOption) {
+    if (!key.e) throw "Invalid RSA key";
 
-  constructor(key: RSAKey, options: RSAOption) {
-    this.key = key;
-    this.options = options;
-  }
-
-  async encrypt(message: Uint8Array) {
-    if (!this.key.e) throw "Invalid RSA key";
-
-    if (this.options.padding === "oaep") {
+    if (options.padding === "oaep") {
       return new RawBinary(rsa_oaep_encrypt(
-        this.key.length,
-        this.key.n,
-        this.key.e,
+        key.length,
+        key.n,
+        key.e,
         message,
-        this.options.hash,
+        options.hash,
       ));
-    } else if (this.options.padding === "pkcs1") {
+    } else if (options.padding === "pkcs1") {
       return new RawBinary(
-        rsa_pkcs1_encrypt(this.key.length, this.key.n, this.key.e, message),
+        rsa_pkcs1_encrypt(key.length, key.n, key.e, message),
       );
     }
 
     throw "Invalid parameters";
   }
 
-  async decrypt(ciper: Uint8Array) {
-    if (!this.key.d) throw "Invalid RSA key";
+  static async decrypt(key: RSAKey, ciper: Uint8Array, options: RSAOption) {
+    if (!key.d) throw "Invalid RSA key";
 
-    if (this.options.padding === "oaep") {
+    if (options.padding === "oaep") {
       return new RawBinary(rsa_oaep_decrypt(
-        this.key.length,
-        this.key.n,
-        this.key.d,
+        key.length,
+        key.n,
+        key.d,
         ciper,
-        this.options.hash,
+        options.hash,
       ));
-    } else if (this.options.padding === "pkcs1") {
+    } else if (options.padding === "pkcs1") {
       return new RawBinary(
-        rsa_pkcs1_decrypt(this.key.length, this.key.n, this.key.d, ciper),
+        rsa_pkcs1_decrypt(key.length, key.n, key.d, ciper),
       );
     }
 
     throw "Invalid parameters";
+  }
+
+  static async verify(
+    key: RSAKey,
+    signature: Uint8Array,
+    message: Uint8Array,
+    options: RSASignOption,
+  ) {
+    if (!key.e) throw "Invalid RSA key";
+
+    return rsa_pkcs1_verify(
+      key.length,
+      key.n,
+      key.e,
+      signature,
+      createHash(options.hash).update(message).digest(),
+    );
   }
 }

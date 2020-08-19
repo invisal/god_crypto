@@ -14,3 +14,8 @@ export interface RSAOption {
   hash: "sha1" | "sha256";
   padding: "oaep" | "pkcs1";
 }
+
+export interface RSASignOption {
+  hash: "sha1" | "sha256";
+  algorithm: "rsassa-pkcs1-v1_5";
+}
