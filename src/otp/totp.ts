@@ -53,7 +53,7 @@ export class TOTP {
   /**
    * @param numberOfByte Number of bytes used to generate the random key
    */
-  static async generateSecret(numberOfByte: number) {
+  static generateSecret(numberOfByte: number) {
     const bin = new RawBinary(numberOfByte);
     crypto.getRandomValues(bin);
     return bin.base32();
