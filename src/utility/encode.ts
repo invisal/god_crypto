@@ -22,6 +22,20 @@ export class encode {
     return new RawBinary(Uint8Array.from(atob(data), (c) => c.charCodeAt(0)));
   }
 
+  static base64url(data: string) {
+    let input = data
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+
+    const pad = input.length % 4;
+    if (pad) {
+      if (pad === 1) throw "Invalid length";
+      input += new Array(5 - pad).join("=");
+    }
+
+    return encode.base64(input);
+  }
+
   static binary(data: Uint8Array | number[]) {
     return new RawBinary(data);
   }
