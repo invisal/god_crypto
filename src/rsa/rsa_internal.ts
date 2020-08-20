@@ -3,6 +3,7 @@ import { eme_oaep_encode, eme_oaep_decode } from "./eme_oaep.ts";
 import { os2ip, i2osp } from "./primitives.ts";
 import { concat, random_bytes } from "./../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
+import { RawBinary } from "../binary.ts";
 
 /**
  * @param n public key modulus
@@ -120,5 +121,27 @@ export function rsa_pkcs1_verify(
   return true;
 }
 
-// 3031300d0609608648016503040201050004208041fb8cba9e4f8cc1483790b05262841f27fdcb211bc039ddf8864374db5f53
-//                                       8041fb8cba9e4f8cc1483790b05262841f27fdcb211bc039ddf8864374db5f53
+export function rsa_pkcs1_sign(
+  bytes: number,
+  n: bigint,
+  d: bigint,
+  message: Uint8Array,
+): RawBinary {
+  // deno-fmt-ignore
+  const oid = [0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00]
+  const der = [
+    0x30,
+    message.length + 2 + oid.length,
+    ...oid,
+    0x04,
+    message.length,
+    ...message,
+  ];
+
+  const ps = new Array(bytes - 3 - der.length).fill(0xff);
+  const em = new Uint8Array([0x00, 0x01, ...ps, 0x00, ...der]);
+
+  const msg = os2ip(em);
+  const c = rsaep(n, d, msg);
+  return new RawBinary(i2osp(c, bytes));
+}

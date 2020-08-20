@@ -4,6 +4,7 @@ import {
   rsa_oaep_decrypt,
   rsa_pkcs1_decrypt,
   rsa_pkcs1_verify,
+  rsa_pkcs1_sign,
 } from "./rsa_internal.ts";
 import { RawBinary } from "./../binary.ts";
 import { RSAKey, RSAOption, RSASignOption } from "./common.ts";
@@ -63,6 +64,17 @@ export class PureRSA {
       key.n,
       key.e,
       signature,
+      createHash(options.hash).update(message).digest(),
+    );
+  }
+
+  static async sign(key: RSAKey, message: Uint8Array, options: RSASignOption) {
+    if (!key.d) throw "You need private key to sign the message";
+
+    return rsa_pkcs1_sign(
+      key.length,
+      key.n,
+      key.d,
       createHash(options.hash).update(message).digest(),
     );
   }

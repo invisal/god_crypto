@@ -11,6 +11,13 @@ export class RawBinary extends Uint8Array {
     return btoa(String.fromCharCode.apply(null, [...this]));
   }
 
+  base64url(): string {
+    let a = btoa(String.fromCharCode.apply(null, [...this])).replace(/=/g, "");
+    a = a.replace(/\+/g, "-");
+    a = a.replace(/\//g, "_");
+    return a;
+  }
+
   base32(): string {
     const lookup = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     const trim = [0x0, 0x1, 0x3, 0x7, 0xf, 0x1f, 0x3f, 0x7f, 0xff];

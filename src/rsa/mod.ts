@@ -75,6 +75,23 @@ export class RSA {
     );
   }
 
+  async sign(
+    message: Uint8Array | string,
+    options?: Partial<RSASignOption>,
+  ): Promise<RawBinary> {
+    const computedOption: RSASignOption = {
+      ...options,
+      algorithm: "rsassa-pkcs1-v1_5",
+      hash: "sha256",
+    };
+
+    return await PureRSA.sign(
+      this.key,
+      computeMessage(message),
+      computedOption,
+    );
+  }
+
   static parseKey(key: string): RSAKey {
     if (key.indexOf("-----BEGIN RSA PRIVATE KEY-----") === 0) {
       const trimmedKey = key.substr(31, key.length - 61);
