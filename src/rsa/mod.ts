@@ -1,9 +1,10 @@
-import { RSAKey, RSAOption, RSASignOption } from "./common.ts";
+import { RSAKey, RSAOption, RSASignOption, JSONWebKey } from "./common.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { base64_to_binary, get_key_size, str2bytes } from "./../helper.ts";
 import { WebCryptoRSA } from "./rsa_wc.ts";
 import { PureRSA } from "./rsa_js.ts";
 import { RawBinary } from "../binary.ts";
+import { rsa_import_key } from "./import_key.ts";
 
 type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]];
 
@@ -92,37 +93,23 @@ export class RSA {
     );
   }
 
-  static parseKey(key: string): RSAKey {
-    if (key.indexOf("-----BEGIN RSA PRIVATE KEY-----") === 0) {
-      const trimmedKey = key.substr(31, key.length - 61);
-      const parseKey = ber_simple(
-        ber_decode(base64_to_binary(trimmedKey)),
-      ) as bigint[];
+  static parseKey(
+    key: string | JSONWebKey,
+    format: "auto" | "jwk" | "pem" = "auto",
+  ): RSAKey {
+    return rsa_import_key(key, format);
+  }
 
-      return {
-        n: parseKey[1],
-        d: parseKey[3],
-        e: parseKey[2],
-        p: parseKey[4],
-        q: parseKey[5],
-        dp: parseKey[6],
-        dq: parseKey[7],
-        qi: parseKey[8],
-        length: get_key_size(parseKey[1]),
-      };
-    } else if (key.indexOf("-----BEGIN PUBLIC KEY-----") === 0) {
-      const trimmedKey = key.substr(26, key.length - 51);
-      const parseKey = ber_simple(
-        ber_decode(base64_to_binary(trimmedKey)),
-      ) as RSAPublicKeyFormat;
-
-      return {
-        length: get_key_size(parseKey[1][0][0]),
-        n: parseKey[1][0][0],
-        e: parseKey[1][0][1],
-      };
-    }
-
-    throw "Invalid key format";
+  /**
+   * Convert key in an external, portable format to our internal key format
+   * 
+   * @param key String or key containing the key in the given format.
+   * @param format is a string describing the data format of the key to import. Choose "auto", it will try to guess the correct format of the given key
+   */
+  static importKey(
+    key: string | JSONWebKey,
+    format: "auto" | "jwk" | "pem" = "auto",
+  ): RSAKey {
+    return rsa_import_key(key, format);
   }
 }

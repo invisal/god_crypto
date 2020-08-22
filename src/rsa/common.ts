@@ -19,3 +19,18 @@ export interface RSASignOption {
   hash: "sha256";
   algorithm: "rsassa-pkcs1-v1_5";
 }
+
+export interface JSONWebKey {
+  kty: string;
+  kid?: string;
+  use?: string;
+  e?: string;
+  d?: string;
+  n?: string;
+  p?: string;
+  q?: string;
+  dp?: string;
+  dq?: string;
+  qi?: string;
+  alg?: string;
+}
