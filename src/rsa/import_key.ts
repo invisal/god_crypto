@@ -6,6 +6,9 @@ import { os2ip } from "./primitives.ts";
 
 type RSAImportKeyFormat = "auto" | "jwk" | "pem";
 type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]];
+type RSACertKeyFormat = [
+  [number, string, null, null, null, RSAPublicKeyFormat],
+];
 
 /**
  * Automatically detect the key format
@@ -44,6 +47,25 @@ function rsa_import_jwk(key: JSONWebKey): RSAKey {
     dq: key.dq ? os2ip(encode.base64url(key.dq)) : undefined,
     qi: key.qi ? os2ip(encode.base64url(key.qi)) : undefined,
     length: get_key_size(n),
+  };
+}
+
+/**
+ * 
+ * https://tools.ietf.org/html/rfc5280#section-4.1
+ * 
+ * @param key 
+ */
+function rsa_import_pem_cert(key: string): RSAKey {
+  const trimmedKey = key.substr(27, key.length - 52);
+  const parseKey = ber_simple(
+    ber_decode(base64_to_binary(trimmedKey)),
+  ) as RSACertKeyFormat;
+
+  return {
+    length: get_key_size(parseKey[0][5][1][0][0]),
+    n: parseKey[0][5][1][0][0],
+    e: parseKey[0][5][1][0][1],
   };
 }
 
@@ -100,15 +122,14 @@ function rsa_import_pem_public(key: string): RSAKey {
 function rsa_import_pem(key: string): RSAKey {
   if (typeof key !== "string") throw new TypeError("PEM key must be string");
 
-  if (
-    key.indexOf("-----BEGIN RSA PRIVATE KEY-----") === 0
-  ) {
-    return rsa_import_pem_private(key);
-  }
-  if (
-    key.indexOf("-----BEGIN PUBLIC KEY-----") === 0
-  ) {
-    return rsa_import_pem_public(key);
+  const maps: [string, (key: string) => RSAKey][] = [
+    ["-----BEGIN RSA PRIVATE KEY-----", rsa_import_pem_private],
+    ["-----BEGIN PUBLIC KEY-----", rsa_import_pem_public],
+    ["-----BEGIN CERTIFICATE-----", rsa_import_pem_cert],
+  ];
+
+  for (const [prefix, func] of maps) {
+    if (key.indexOf(prefix) === 0) return func(key);
   }
 
   throw new TypeError("Unsupported key format");
