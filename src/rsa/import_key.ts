@@ -57,7 +57,7 @@ function rsa_import_jwk(key: JSONWebKey): RSAKey {
  * @param key 
  */
 function rsa_import_pem_cert(key: string): RSAKey {
-  const trimmedKey = key.substr(27, key.length - 52);
+  const trimmedKey = key.substr(27, key.length - 53);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
   ) as RSACertKeyFormat;
