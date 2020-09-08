@@ -14,6 +14,17 @@ export class encode {
     return output;
   }
 
+  static bigint(n: bigint) {
+    const bytes = [];
+    while (n > 0) {
+      bytes.push(Number(n & 255n));
+      n = n >> 8n;
+    }
+
+    bytes.reverse();
+    return new RawBinary(bytes);
+  }
+
   static string(data: string) {
     return new RawBinary(new TextEncoder().encode(data));
   }

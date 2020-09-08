@@ -1,4 +1,5 @@
-import { RSAKey, RSAOption } from "./common.ts";
+import { RSAOption } from "./common.ts";
+import { RSAKey } from "./rsa_key.ts";
 
 function big_base64(m?: bigint) {
   if (m === undefined) return undefined;

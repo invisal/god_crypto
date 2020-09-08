@@ -29,6 +29,17 @@ export function concat(...arg: (Uint8Array | number[])[]) {
   return c;
 }
 
+export function bignum_to_byte(n: bigint): number[] {
+  const bytes = [];
+  while (n > 0) {
+    bytes.push(Number(n & 255n));
+    n = n >> 8n;
+  }
+
+  bytes.reverse();
+  return bytes;
+}
+
 export function random_bytes(length: number): Uint8Array {
   const n = new Uint8Array(length);
   for (let i = 0; i < length; i++) n[i] = ((Math.random() * 254) | 0) + 1;
