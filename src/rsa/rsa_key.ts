@@ -28,7 +28,7 @@ export class RSAKey {
     this.length = params.length;
   }
 
-  public pkcs8(): string {
+  public pem(): string {
     if (this.d) {
       return rsa_export_pkcs8_private(this);
     } else {
