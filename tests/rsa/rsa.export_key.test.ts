@@ -15,8 +15,8 @@ const publicKeyRaw = "-----BEGIN PUBLIC KEY-----\n" +
   "-----END PUBLIC KEY-----\n";
 
 Deno.test("RSA - PKCS8 to PKCS8", async () => {
-  assertEquals(RSA.importKey(privateKeyRaw).pkcs8(), privateKeyRaw);
-  assertEquals(RSA.importKey(publicKeyRaw).pkcs8(), publicKeyRaw);
+  assertEquals(RSA.importKey(privateKeyRaw).pem(), privateKeyRaw);
+  assertEquals(RSA.importKey(publicKeyRaw).pem(), publicKeyRaw);
 });
 
 Deno.test("RSA - JWK to PKCS8", async () => {
@@ -26,7 +26,7 @@ Deno.test("RSA - JWK to PKCS8", async () => {
     e: "AQAB",
   };
 
-  assertEquals(RSA.importKey(jwk).pkcs8(), publicKeyRaw);
+  assertEquals(RSA.importKey(jwk).pem(), publicKeyRaw);
 });
 
 Deno.test("RSA - PKCS8 to JWK", async () => {
