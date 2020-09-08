@@ -1,5 +1,5 @@
 import { encode } from "./../../src/utility/encode.ts";
-import { JSONWebKey, RSAKey } from "./common.ts";
+import { JSONWebKey, RSAKeyParams } from "./common.ts";
 import { get_key_size, base64_to_binary } from "../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { os2ip } from "./primitives.ts";
@@ -31,7 +31,7 @@ function detect_format(key: string | JSONWebKey): RSAImportKeyFormat {
  * 
  * @param key PEM encoded key format
  */
-function rsa_import_jwk(key: JSONWebKey): RSAKey {
+function rsa_import_jwk(key: JSONWebKey): RSAKeyParams {
   if (typeof key !== "object") throw new TypeError("Invalid JWK format");
   if (!key.n) throw new TypeError("RSA key requires n");
 
@@ -56,7 +56,7 @@ function rsa_import_jwk(key: JSONWebKey): RSAKey {
  * 
  * @param key 
  */
-function rsa_import_pem_cert(key: string): RSAKey {
+function rsa_import_pem_cert(key: string): RSAKeyParams {
   const trimmedKey = key.substr(27, key.length - 53);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
@@ -75,7 +75,7 @@ function rsa_import_pem_cert(key: string): RSAKey {
  * 
  * @param key PEM encoded key format
  */
-function rsa_import_pem_private(key: string): RSAKey {
+function rsa_import_pem_private(key: string): RSAKeyParams {
   const trimmedKey = key.substr(31, key.length - 61);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
@@ -100,7 +100,7 @@ function rsa_import_pem_private(key: string): RSAKey {
  * 
  * @param key PEM encoded key format
  */
-function rsa_import_pem_public(key: string): RSAKey {
+function rsa_import_pem_public(key: string): RSAKeyParams {
   const trimmedKey = key.substr(26, key.length - 51);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
@@ -119,10 +119,10 @@ function rsa_import_pem_public(key: string): RSAKey {
  * 
  * @param key PEM encoded key format
  */
-function rsa_import_pem(key: string): RSAKey {
+function rsa_import_pem(key: string): RSAKeyParams {
   if (typeof key !== "string") throw new TypeError("PEM key must be string");
 
-  const maps: [string, (key: string) => RSAKey][] = [
+  const maps: [string, (key: string) => RSAKeyParams][] = [
     ["-----BEGIN RSA PRIVATE KEY-----", rsa_import_pem_private],
     ["-----BEGIN PUBLIC KEY-----", rsa_import_pem_public],
     ["-----BEGIN CERTIFICATE-----", rsa_import_pem_cert],
@@ -144,7 +144,7 @@ function rsa_import_pem(key: string): RSAKey {
 export function rsa_import_key(
   key: string | JSONWebKey,
   format: RSAImportKeyFormat,
-): RSAKey {
+): RSAKeyParams {
   const finalFormat = format === "auto" ? detect_format(key) : format;
 
   if (finalFormat === "jwk") return rsa_import_jwk(key as JSONWebKey);

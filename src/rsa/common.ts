@@ -1,4 +1,4 @@
-export interface RSAKey {
+export interface RSAKeyParams {
   n: bigint;
   e?: bigint;
   d?: bigint;

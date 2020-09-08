@@ -1,10 +1,9 @@
-import { RSAKey, RSAOption, RSASignOption, JSONWebKey } from "./common.ts";
-import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
-import { base64_to_binary, get_key_size, str2bytes } from "./../helper.ts";
+import { RSAOption, RSASignOption, JSONWebKey } from "./common.ts";
 import { WebCryptoRSA } from "./rsa_wc.ts";
 import { PureRSA } from "./rsa_js.ts";
 import { RawBinary } from "../binary.ts";
 import { rsa_import_key } from "./import_key.ts";
+import { RSAKey } from "./rsa_key.ts";
 
 type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]];
 
@@ -97,7 +96,7 @@ export class RSA {
     key: string | JSONWebKey,
     format: "auto" | "jwk" | "pem" = "auto",
   ): RSAKey {
-    return rsa_import_key(key, format);
+    return this.importKey(key, format);
   }
 
   /**
@@ -110,6 +109,6 @@ export class RSA {
     key: string | JSONWebKey,
     format: "auto" | "jwk" | "pem" = "auto",
   ): RSAKey {
-    return rsa_import_key(key, format);
+    return new RSAKey(rsa_import_key(key, format));
   }
 }
