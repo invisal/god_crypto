@@ -7,8 +7,8 @@ import {
   BlockCiper,
   BlockCiperOperation,
 } from "./block_ciper_operator.ts";
-import { BlockCiperConfig } from "./common.ts";
-import { AESBase } from "./aes_base.ts";
+import type { BlockCiperConfig } from "./common.ts";
+import type { AESBase } from "./aes_base.ts";
 
 // deno-fmt-ignore
 const SBOX: number[] = [

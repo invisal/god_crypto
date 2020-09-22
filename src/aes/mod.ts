@@ -1,8 +1,8 @@
 import { RawBinary } from "../binary.ts";
-import { AESBase } from "./aes_base.ts";
+import type { AESBase } from "./aes_base.ts";
 import { WebCryptoAES } from "./aes_wc.ts";
 import { PureAES } from "./aes_js.ts";
-import { AESOption } from "./common.ts";
+import type { AESOption } from "./common.ts";
 
 function computeMessage(m: Uint8Array | string) {
   return typeof m === "string" ? new TextEncoder().encode(m) : m;

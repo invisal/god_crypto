@@ -1,5 +1,5 @@
 import { encode } from "./../../src/utility/encode.ts";
-import { JSONWebKey, RSAKeyParams } from "./common.ts";
+import type { JSONWebKey, RSAKeyParams } from "./common.ts";
 import { get_key_size, base64_to_binary } from "../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { os2ip } from "./primitives.ts";
