@@ -95,6 +95,33 @@ function rsa_import_pem_private(key: string): RSAKeyParams {
 }
 
 /**
+ * Import private key from Privacy-Enhanced Mail (PEM) format
+ * https://tools.ietf.org/html/rfc5208
+ *
+ * @param key PEM encoded key format
+ */
+function rsa_import_pem_private_pkcs8(key: string): RSAKeyParams {
+  const trimmedKey = key.substr(27, key.length - 57);
+  const parseWrappedKey = ber_simple(
+    ber_decode(base64_to_binary(trimmedKey)),
+  ) as [number, unknown, Uint8Array];
+
+  const parseKey = ber_simple(ber_decode(parseWrappedKey[2])) as bigint[];
+
+  return {
+    n: parseKey[1],
+    d: parseKey[3],
+    e: parseKey[2],
+    p: parseKey[4],
+    q: parseKey[5],
+    dp: parseKey[6],
+    dq: parseKey[7],
+    qi: parseKey[8],
+    length: get_key_size(parseKey[1]),
+  };
+}
+
+/**
  * Import public key from Privacy-Enhanced Mail (PEM) format
  * https://tools.ietf.org/html/rfc5208
  *
@@ -124,6 +151,7 @@ function rsa_import_pem(key: string): RSAKeyParams {
 
   const maps: [string, (key: string) => RSAKeyParams][] = [
     ["-----BEGIN RSA PRIVATE KEY-----", rsa_import_pem_private],
+    ["-----BEGIN PRIVATE KEY-----", rsa_import_pem_private_pkcs8],
     ["-----BEGIN PUBLIC KEY-----", rsa_import_pem_public],
     ["-----BEGIN CERTIFICATE-----", rsa_import_pem_cert],
   ];

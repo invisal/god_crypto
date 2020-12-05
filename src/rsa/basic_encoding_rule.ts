@@ -55,10 +55,7 @@ function ber_integer(bytes: Uint8Array, from: number, length: number): bigint {
 }
 
 function ber_oid(bytes: Uint8Array, from: number, length: number): string {
-  const id = [
-    (bytes[from] / 40) | 0,
-    (bytes[from] % 40),
-  ];
+  const id = [(bytes[from] / 40) | 0, bytes[from] % 40];
   let value = 0;
 
   for (const b of bytes.slice(from + 1, from + length)) {
@@ -125,7 +122,7 @@ function ber_next(
   }
 
   return {
-    totalLength: (ptr - from) + size,
+    totalLength: ptr - from + size,
     type,
     length: size,
     value,
