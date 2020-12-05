@@ -1,6 +1,4 @@
-import {
-  assertEquals,
-} from "https://deno.land/std@0.63.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.63.0/testing/asserts.ts";
 import { RSA } from "./../../mod.ts";
 
 Deno.test("Decrypt RSA OAEP SHA1", async () => {

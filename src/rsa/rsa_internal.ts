@@ -1,6 +1,6 @@
 import { power_mod } from "./../math.ts";
-import { eme_oaep_encode, eme_oaep_decode } from "./eme_oaep.ts";
-import { os2ip, i2osp } from "./primitives.ts";
+import { eme_oaep_decode, eme_oaep_encode } from "./eme_oaep.ts";
+import { i2osp, os2ip } from "./primitives.ts";
 import { concat, random_bytes } from "./../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { RawBinary } from "../binary.ts";

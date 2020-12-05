@@ -1,7 +1,5 @@
-import {
-  assertEquals,
-} from "https://deno.land/std@0.63.0/testing/asserts.ts";
-import { RSA, encode } from "./../../mod.ts";
+import { assertEquals } from "https://deno.land/std@0.63.0/testing/asserts.ts";
+import { encode, RSA } from "./../../mod.ts";
 
 Deno.test("Verify RSASSA-PKSC1-v1_5", async () => {
   const publicKey = `-----BEGIN PUBLIC KEY-----

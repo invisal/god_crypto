@@ -1,7 +1,5 @@
 import { RSA } from "./../../mod.ts";
-import {
-  assertEquals,
-} from "https://deno.land/std@0.63.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.63.0/testing/asserts.ts";
 
 const privateKeyRaw = Deno.readTextFileSync("./tests/rsa/private.pem");
 const publicKeyRaw = "-----BEGIN PUBLIC KEY-----\n" +

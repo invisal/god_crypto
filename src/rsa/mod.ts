@@ -1,4 +1,4 @@
-import type { RSAOption, RSASignOption, JSONWebKey } from "./common.ts";
+import type { JSONWebKey, RSAOption, RSASignOption } from "./common.ts";
 import { WebCryptoRSA } from "./rsa_wc.ts";
 import { PureRSA } from "./rsa_js.ts";
 import { RawBinary } from "../binary.ts";
@@ -26,10 +26,7 @@ export class RSA {
     this.key = key;
   }
 
-  async encrypt(
-    m: Uint8Array | string,
-    options?: Partial<RSAOption>,
-  ) {
+  async encrypt(m: Uint8Array | string, options?: Partial<RSAOption>) {
     const computedOption = computeOption(options);
 
     const func = WebCryptoRSA.isSupported(computedOption)
@@ -41,19 +38,14 @@ export class RSA {
     );
   }
 
-  async decrypt(
-    m: Uint8Array,
-    options?: Partial<RSAOption>,
-  ) {
+  async decrypt(m: Uint8Array, options?: Partial<RSAOption>) {
     const computedOption = computeOption(options);
 
     const func = WebCryptoRSA.isSupported(computedOption)
       ? WebCryptoRSA.decrypt
       : PureRSA.decrypt;
 
-    return new RawBinary(
-      await func(this.key, m, computedOption),
-    );
+    return new RawBinary(await func(this.key, m, computedOption));
   }
 
   async verify(
@@ -101,7 +93,7 @@ export class RSA {
 
   /**
    * Convert key in an external, portable format to our internal key format
-   * 
+   *
    * @param key String or key containing the key in the given format.
    * @param format is a string describing the data format of the key to import. Choose "auto", it will try to guess the correct format of the given key
    */

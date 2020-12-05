@@ -1,6 +1,6 @@
 import { encode } from "./../../src/utility/encode.ts";
 import type { JSONWebKey, RSAKeyParams } from "./common.ts";
-import { get_key_size, base64_to_binary } from "../helper.ts";
+import { base64_to_binary, get_key_size } from "../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { os2ip } from "./primitives.ts";
 
@@ -12,7 +12,7 @@ type RSACertKeyFormat = [
 
 /**
  * Automatically detect the key format
- * 
+ *
  * @param key
  */
 function detect_format(key: string | JSONWebKey): RSAImportKeyFormat {
@@ -28,7 +28,7 @@ function detect_format(key: string | JSONWebKey): RSAImportKeyFormat {
 /**
  * Import from JSON Web Key
  * https://tools.ietf.org/html/rfc7517
- * 
+ *
  * @param key PEM encoded key format
  */
 function rsa_import_jwk(key: JSONWebKey): RSAKeyParams {
@@ -51,10 +51,10 @@ function rsa_import_jwk(key: JSONWebKey): RSAKeyParams {
 }
 
 /**
- * 
+ *
  * https://tools.ietf.org/html/rfc5280#section-4.1
- * 
- * @param key 
+ *
+ * @param key
  */
 function rsa_import_pem_cert(key: string): RSAKeyParams {
   const trimmedKey = key.substr(27, key.length - 53);
@@ -72,7 +72,7 @@ function rsa_import_pem_cert(key: string): RSAKeyParams {
 /**
  * Import private key from Privacy-Enhanced Mail (PEM) format
  * https://tools.ietf.org/html/rfc5208
- * 
+ *
  * @param key PEM encoded key format
  */
 function rsa_import_pem_private(key: string): RSAKeyParams {
@@ -97,7 +97,7 @@ function rsa_import_pem_private(key: string): RSAKeyParams {
 /**
  * Import public key from Privacy-Enhanced Mail (PEM) format
  * https://tools.ietf.org/html/rfc5208
- * 
+ *
  * @param key PEM encoded key format
  */
 function rsa_import_pem_public(key: string): RSAKeyParams {
@@ -116,7 +116,7 @@ function rsa_import_pem_public(key: string): RSAKeyParams {
 /**
  * Import key from Privacy-Enhanced Mail (PEM) format
  * https://tools.ietf.org/html/rfc5208
- * 
+ *
  * @param key PEM encoded key format
  */
 function rsa_import_pem(key: string): RSAKeyParams {
@@ -137,9 +137,9 @@ function rsa_import_pem(key: string): RSAKeyParams {
 
 /**
  * Import other RSA key format to our RSA key format
- * 
- * @param key 
- * @param format 
+ *
+ * @param key
+ * @param format
  */
 export function rsa_import_key(
   key: string | JSONWebKey,
