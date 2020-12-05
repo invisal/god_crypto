@@ -23,7 +23,7 @@ type BasicEncodingSimpleValue =
 export function ber_decode(
   bytes: Uint8Array,
   from?: number,
-  to?: number,
+  to?: number
 ): BasicEncodingRule {
   return ber_next(bytes);
 }
@@ -31,7 +31,7 @@ export function ber_decode(
 function ber_sequence(
   bytes: Uint8Array,
   from: number,
-  length: number,
+  length: number
 ): BasicEncodingRule[] {
   const end = from + length;
   let res: BasicEncodingRule[] = [];
@@ -55,10 +55,7 @@ function ber_integer(bytes: Uint8Array, from: number, length: number): bigint {
 }
 
 function ber_oid(bytes: Uint8Array, from: number, length: number): string {
-  const id = [
-    (bytes[from] / 40) | 0,
-    (bytes[from] % 40),
-  ];
+  const id = [(bytes[from] / 40) | 0, bytes[from] % 40];
   let value = 0;
 
   for (const b of bytes.slice(from + 1, from + length)) {
@@ -76,7 +73,7 @@ function ber_oid(bytes: Uint8Array, from: number, length: number): string {
 function ber_unknown(
   bytes: Uint8Array,
   from: number,
-  length: number,
+  length: number
 ): Uint8Array {
   return bytes.slice(from, from + length);
 }
@@ -89,7 +86,7 @@ export function ber_simple(n: BasicEncodingRule): BasicEncodingSimpleValue {
 function ber_next(
   bytes: Uint8Array,
   from?: number,
-  to?: number,
+  to?: number
 ): BasicEncodingRule {
   if (!from) from = 0;
   if (!to) to = bytes.length;
@@ -120,12 +117,14 @@ function ber_next(
     value = null;
   } else if (type === 0x6) {
     value = ber_oid(bytes, ptr, size);
+  } else if (type === 0x4) {
+    value = ber_sequence(bytes, ptr, size);
   } else {
     value = ber_unknown(bytes, ptr, size);
   }
 
   return {
-    totalLength: (ptr - from) + size,
+    totalLength: ptr - from + size,
     type,
     length: size,
     value,
