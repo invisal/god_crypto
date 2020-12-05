@@ -1,4 +1,4 @@
-import { RSAOption, RSASignOption, JSONWebKey } from "./common.ts";
+import { JSONWebKey, RSAOption, RSASignOption } from "./common.ts";
 import { WebCryptoRSA } from "./rsa_wc.ts";
 import { PureRSA } from "./rsa_js.ts";
 import { RawBinary } from "../binary.ts";

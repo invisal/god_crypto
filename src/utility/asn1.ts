@@ -16,7 +16,7 @@ export class BER {
     // Combine the total size of its children
     const size = children.reduce(
       (accumlatedSize, child) => accumlatedSize + child.length,
-      0
+      0,
     );
 
     return new Uint8Array([
@@ -24,7 +24,7 @@ export class BER {
       ...createSizeBuffer(size),
       ...children.reduce<number[]>(
         (buffer, child) => [...buffer, ...child],
-        []
+        [],
       ),
     ]);
   }

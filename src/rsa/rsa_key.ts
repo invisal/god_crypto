@@ -1,4 +1,4 @@
-import { RSAKeyParams, JSONWebKey } from "./common.ts";
+import { JSONWebKey, RSAKeyParams } from "./common.ts";
 import { encode } from "./../../src/utility/encode.ts";
 import {
   rsa_export_pkcs8_private,

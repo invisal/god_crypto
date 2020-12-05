@@ -1,7 +1,5 @@
 import { RSA } from "./../../rsa.ts";
-import {
-  assertEquals,
-} from "https://deno.land/std@0.63.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.63.0/testing/asserts.ts";
 
 Deno.test("RSA - Import JWK Public Key", () => {
   const jwk = {

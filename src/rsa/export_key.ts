@@ -34,7 +34,7 @@ export function rsa_export_pkcs8_public(key: RSAKeyParams) {
       BER.createSequence([
         BER.createInteger(key.n),
         BER.createInteger(key.e || 0n),
-      ])
+      ]),
     ),
   ]);
 

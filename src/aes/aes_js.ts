@@ -3,10 +3,7 @@
 // https://link.springer.com/content/pdf/10.1007/3-540-36400-5_13.pdf
 // http://asmaes.sourceforge.net/rijndael/rijndaelImplementation.pdf
 // https://www.movable-type.co.uk/scripts/aes.html
-import {
-  BlockCiper,
-  BlockCiperOperation,
-} from "./block_ciper_operator.ts";
+import { BlockCiper, BlockCiperOperation } from "./block_ciper_operator.ts";
 import { BlockCiperConfig } from "./common.ts";
 import { AESBase } from "./aes_base.ts";
 
