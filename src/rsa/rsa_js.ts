@@ -7,9 +7,9 @@ import {
   rsa_pkcs1_verify,
 } from "./rsa_internal.ts";
 import { RawBinary } from "./../binary.ts";
-import { RSAOption, RSASignOption } from "./common.ts";
+import type { RSAOption, RSASignOption } from "./common.ts";
 import { createHash } from "../hash.ts";
-import { RSAKey } from "./rsa_key.ts";
+import type { RSAKey } from "./rsa_key.ts";
 
 export class PureRSA {
   static async encrypt(key: RSAKey, message: Uint8Array, options: RSAOption) {

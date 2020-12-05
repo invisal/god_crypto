@@ -1,5 +1,5 @@
-import { AESBase } from "./aes_base.ts";
-import { BlockCiperConfig } from "./common.ts";
+import type { AESBase } from "./aes_base.ts";
+import type { BlockCiperConfig } from "./common.ts";
 
 function base64(m: Uint8Array) {
   return btoa(String.fromCharCode.apply(null, [...m])).replace(/=/g, "");

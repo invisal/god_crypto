@@ -1,5 +1,5 @@
 import { xor } from "./../helper.ts";
-import { BlockCiperConfig } from "./common.ts";
+import type { BlockCiperConfig } from "./common.ts";
 
 export abstract class BlockCiper {
   abstract encrypt(m: Uint8Array): Uint8Array;
