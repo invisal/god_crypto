@@ -1,4 +1,4 @@
-import type { RSAOption, RSASignOption, JSONWebKey } from "./common.ts";
+import type { JSONWebKey, RSAOption, RSASignOption } from "./common.ts";
 import { WebCryptoRSA } from "./rsa_wc.ts";
 import { PureRSA } from "./rsa_js.ts";
 import { RawBinary } from "../binary.ts";
@@ -34,7 +34,7 @@ export class RSA {
       : PureRSA.encrypt;
 
     return new RawBinary(
-      await func(this.key, computeMessage(m), computedOption)
+      await func(this.key, computeMessage(m), computedOption),
     );
   }
 
@@ -51,7 +51,7 @@ export class RSA {
   async verify(
     signature: Uint8Array,
     message: Uint8Array | string,
-    options?: Partial<RSASignOption>
+    options?: Partial<RSASignOption>,
   ): Promise<boolean> {
     const computedOption: RSASignOption = {
       ...options,
@@ -63,13 +63,13 @@ export class RSA {
       this.key,
       signature,
       computeMessage(message),
-      computedOption
+      computedOption,
     );
   }
 
   async sign(
     message: Uint8Array | string,
-    options?: Partial<RSASignOption>
+    options?: Partial<RSASignOption>,
   ): Promise<RawBinary> {
     const computedOption: RSASignOption = {
       ...options,
@@ -80,13 +80,13 @@ export class RSA {
     return await PureRSA.sign(
       this.key,
       computeMessage(message),
-      computedOption
+      computedOption,
     );
   }
 
   static parseKey(
     key: string | JSONWebKey,
-    format: "auto" | "jwk" | "pem" = "auto"
+    format: "auto" | "jwk" | "pem" = "auto",
   ): RSAKey {
     return this.importKey(key, format);
   }
@@ -99,7 +99,7 @@ export class RSA {
    */
   static importKey(
     key: string | JSONWebKey,
-    format: "auto" | "jwk" | "pem" = "auto"
+    format: "auto" | "jwk" | "pem" = "auto",
   ): RSAKey {
     return new RSAKey(rsa_import_key(key, format));
   }

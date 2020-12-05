@@ -671,23 +671,19 @@ class AESBlockCiper implements BlockCiper {
         block[offset + 3],
       ];
 
-      block[offset] =
-        xtime(a[0], 0x2) ^
+      block[offset] = xtime(a[0], 0x2) ^
         xtime(a[1], 0x3) ^
         xtime(a[2], 0x1) ^
         xtime(a[3], 0x1);
-      block[offset + 1] =
-        xtime(a[0], 0x1) ^
+      block[offset + 1] = xtime(a[0], 0x1) ^
         xtime(a[1], 0x2) ^
         xtime(a[2], 0x3) ^
         xtime(a[3], 0x1);
-      block[offset + 2] =
-        xtime(a[0], 0x1) ^
+      block[offset + 2] = xtime(a[0], 0x1) ^
         xtime(a[1], 0x1) ^
         xtime(a[2], 0x2) ^
         xtime(a[3], 0x3);
-      block[offset + 3] =
-        xtime(a[0], 0x3) ^
+      block[offset + 3] = xtime(a[0], 0x3) ^
         xtime(a[1], 0x1) ^
         xtime(a[2], 0x1) ^
         xtime(a[3], 0x2);
@@ -704,23 +700,19 @@ class AESBlockCiper implements BlockCiper {
         block[offset + 3],
       ];
 
-      block[offset] =
-        xtime(a[0], 0xe) ^
+      block[offset] = xtime(a[0], 0xe) ^
         xtime(a[1], 0xb) ^
         xtime(a[2], 0xd) ^
         xtime(a[3], 0x9);
-      block[offset + 1] =
-        xtime(a[0], 0x9) ^
+      block[offset + 1] = xtime(a[0], 0x9) ^
         xtime(a[1], 0xe) ^
         xtime(a[2], 0xb) ^
         xtime(a[3], 0xd);
-      block[offset + 2] =
-        xtime(a[0], 0xd) ^
+      block[offset + 2] = xtime(a[0], 0xd) ^
         xtime(a[1], 0x9) ^
         xtime(a[2], 0xe) ^
         xtime(a[3], 0xb);
-      block[offset + 3] =
-        xtime(a[0], 0xb) ^
+      block[offset + 3] = xtime(a[0], 0xb) ^
         xtime(a[1], 0xd) ^
         xtime(a[2], 0x9) ^
         xtime(a[3], 0xe);
