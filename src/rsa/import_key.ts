@@ -102,22 +102,22 @@ function rsa_import_pem_private(key: string): RSAKeyParams {
  */
 function rsa_import_pem_private_pkcs8(key: string): RSAKeyParams {
   const trimmedKey = key.substr(27, key.length - 57);
-  const parseKey = ber_simple(ber_decode(base64_to_binary(trimmedKey))) as [
-    number,
-    unknown,
-    [bigint[]],
-  ];
+  const parseWrappedKey = ber_simple(
+    ber_decode(base64_to_binary(trimmedKey)),
+  ) as [number, unknown, Uint8Array];
+
+  const parseKey = ber_simple(ber_decode(parseWrappedKey[2])) as bigint[];
 
   return {
-    n: parseKey[2][0][1],
-    d: parseKey[2][0][3],
-    e: parseKey[2][0][2],
-    p: parseKey[2][0][4],
-    q: parseKey[2][0][5],
-    dp: parseKey[2][0][6],
-    dq: parseKey[2][0][7],
-    qi: parseKey[2][0][8],
-    length: get_key_size(parseKey[2][0][1]),
+    n: parseKey[1],
+    d: parseKey[3],
+    e: parseKey[2],
+    p: parseKey[4],
+    q: parseKey[5],
+    dp: parseKey[6],
+    dq: parseKey[7],
+    qi: parseKey[8],
+    length: get_key_size(parseKey[1]),
   };
 }
 

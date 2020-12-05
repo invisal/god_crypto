@@ -117,8 +117,6 @@ function ber_next(
     value = null;
   } else if (type === 0x6) {
     value = ber_oid(bytes, ptr, size);
-  } else if (type === 0x4) {
-    value = ber_sequence(bytes, ptr, size);
   } else {
     value = ber_unknown(bytes, ptr, size);
   }
