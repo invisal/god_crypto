@@ -23,7 +23,7 @@ type BasicEncodingSimpleValue =
 export function ber_decode(
   bytes: Uint8Array,
   from?: number,
-  to?: number
+  to?: number,
 ): BasicEncodingRule {
   return ber_next(bytes);
 }
@@ -31,7 +31,7 @@ export function ber_decode(
 function ber_sequence(
   bytes: Uint8Array,
   from: number,
-  length: number
+  length: number,
 ): BasicEncodingRule[] {
   const end = from + length;
   let res: BasicEncodingRule[] = [];
@@ -73,7 +73,7 @@ function ber_oid(bytes: Uint8Array, from: number, length: number): string {
 function ber_unknown(
   bytes: Uint8Array,
   from: number,
-  length: number
+  length: number,
 ): Uint8Array {
   return bytes.slice(from, from + length);
 }
@@ -86,7 +86,7 @@ export function ber_simple(n: BasicEncodingRule): BasicEncodingSimpleValue {
 function ber_next(
   bytes: Uint8Array,
   from?: number,
-  to?: number
+  to?: number,
 ): BasicEncodingRule {
   if (!from) from = 0;
   if (!to) to = bytes.length;

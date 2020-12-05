@@ -7,7 +7,7 @@ import { os2ip } from "./primitives.ts";
 type RSAImportKeyFormat = "auto" | "jwk" | "pem";
 type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]];
 type RSACertKeyFormat = [
-  [number, string, null, null, null, RSAPublicKeyFormat]
+  [number, string, null, null, null, RSAPublicKeyFormat],
 ];
 
 /**
@@ -59,7 +59,7 @@ function rsa_import_jwk(key: JSONWebKey): RSAKeyParams {
 function rsa_import_pem_cert(key: string): RSAKeyParams {
   const trimmedKey = key.substr(27, key.length - 53);
   const parseKey = ber_simple(
-    ber_decode(base64_to_binary(trimmedKey))
+    ber_decode(base64_to_binary(trimmedKey)),
   ) as RSACertKeyFormat;
 
   return {
@@ -78,7 +78,7 @@ function rsa_import_pem_cert(key: string): RSAKeyParams {
 function rsa_import_pem_private(key: string): RSAKeyParams {
   const trimmedKey = key.substr(31, key.length - 61);
   const parseKey = ber_simple(
-    ber_decode(base64_to_binary(trimmedKey))
+    ber_decode(base64_to_binary(trimmedKey)),
   ) as bigint[];
 
   return {
@@ -105,7 +105,7 @@ function rsa_import_pem_private_pkcs8(key: string): RSAKeyParams {
   const parseKey = ber_simple(ber_decode(base64_to_binary(trimmedKey))) as [
     number,
     unknown,
-    [bigint[]]
+    [bigint[]],
   ];
 
   return {
@@ -130,7 +130,7 @@ function rsa_import_pem_private_pkcs8(key: string): RSAKeyParams {
 function rsa_import_pem_public(key: string): RSAKeyParams {
   const trimmedKey = key.substr(26, key.length - 51);
   const parseKey = ber_simple(
-    ber_decode(base64_to_binary(trimmedKey))
+    ber_decode(base64_to_binary(trimmedKey)),
   ) as RSAPublicKeyFormat;
 
   return {
@@ -171,7 +171,7 @@ function rsa_import_pem(key: string): RSAKeyParams {
  */
 export function rsa_import_key(
   key: string | JSONWebKey,
-  format: RSAImportKeyFormat
+  format: RSAImportKeyFormat,
 ): RSAKeyParams {
   const finalFormat = format === "auto" ? detect_format(key) : format;
 
