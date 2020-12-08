@@ -4,6 +4,7 @@ import { i2osp, os2ip } from "./primitives.ts";
 import { concat, random_bytes } from "./../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { RawBinary } from "../binary.ts";
+import { RSAKey } from "./rsa_key.ts";
 
 /**
  * @param n public key modulus
@@ -19,8 +20,25 @@ export function rsaep(n: bigint, e: bigint, m: bigint): bigint {
  * @param d private key exponent
  * @param c ciphertext representative
  */
-export function rsadp(n: bigint, d: bigint, c: bigint): bigint {
-  return power_mod(c, d, n);
+export function rsadp(key: RSAKey, c: bigint): bigint {
+  if (!key.d) throw "Invalid RSA key";
+
+  if (key.dp && key.dq && key.qi && key.q && key.p) {
+    // Using the Chinese remainder algorithm
+    const m1 = power_mod(c, key.dp, key.p);
+    const m2 = power_mod(c, key.dq, key.q);
+
+    let h = 0n;
+    if (m1 >= m2) {
+      h = (key.qi * (m1 - m2)) % key.p;
+    } else {
+      h = (key.qi * (m1 - m2 + key.p * (key.p / key.q))) % key.p;
+    }
+
+    return (m2 + h * key.q) % (key.q * key.p);
+  } else {
+    return power_mod(c, key.d, key.n);
+  }
 }
 
 export function rsa_oaep_encrypt(
@@ -37,17 +55,15 @@ export function rsa_oaep_encrypt(
 }
 
 export function rsa_oaep_decrypt(
-  bytes: number,
-  n: bigint,
-  d: bigint,
+  key: RSAKey,
   c: Uint8Array,
   algorithm: "sha1" | "sha256",
 ) {
-  const em = rsadp(n, d, os2ip(c));
+  const em = rsadp(key, os2ip(c));
   const m = eme_oaep_decode(
     new Uint8Array(0),
-    i2osp(em, bytes),
-    bytes,
+    i2osp(em, key.length),
+    key.length,
     algorithm,
   );
   return m;
@@ -65,13 +81,8 @@ export function rsa_pkcs1_encrypt(
   return i2osp(c, bytes);
 }
 
-export function rsa_pkcs1_decrypt(
-  bytes: number,
-  n: bigint,
-  d: bigint,
-  c: Uint8Array,
-) {
-  const em = i2osp(rsadp(n, d, os2ip(c)), bytes);
+export function rsa_pkcs1_decrypt(key: RSAKey, c: Uint8Array) {
+  const em = i2osp(rsadp(key, os2ip(c)), key.length);
 
   if (em[0] !== 0) throw "Decryption error";
   if (em[1] !== 0x02) throw "Decryption error";
@@ -87,13 +98,13 @@ export function rsa_pkcs1_decrypt(
 }
 
 export function rsa_pkcs1_verify(
-  bytes: number,
-  n: bigint,
-  d: bigint,
+  key: RSAKey,
   s: Uint8Array,
   m: Uint8Array,
 ): boolean {
-  let em = i2osp(rsadp(n, d, os2ip(s)), bytes);
+  if (!key.e) throw "Invalid RSA key";
+
+  let em = i2osp(rsaep(key.n, key.e, os2ip(s)), key.length);
 
   if (em[0] !== 0) throw "Decryption error";
   if (em[1] !== 0x01) throw "Decryption error";
@@ -128,7 +139,23 @@ export function rsa_pkcs1_sign(
   message: Uint8Array,
 ): RawBinary {
   // deno-fmt-ignore
-  const oid = [0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00]
+  const oid = [
+    0x30,
+    0x0d,
+    0x06,
+    0x09,
+    0x60,
+    0x86,
+    0x48,
+    0x01,
+    0x65,
+    0x03,
+    0x04,
+    0x02,
+    0x01,
+    0x05,
+    0x00,
+  ];
   const der = [
     0x30,
     message.length + 2 + oid.length,
