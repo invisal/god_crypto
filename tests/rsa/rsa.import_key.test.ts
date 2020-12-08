@@ -6,8 +6,7 @@ Deno.test("RSA - Import JWK Public Key", () => {
     e: "AQAB",
     alg: "RS256",
     use: "sig",
-    n:
-      "7NfiTQcshWgrEdKbHC2e1s92kK-YX7jS3JLFIBpT8f_j_b5y3dQdtFFS4vBoVNQkwep_34x_ihYlhA3QkwaTL2XMSiedjLnubFZBUjs7G0dgGIR3F8A06Bf5KT4g2x1dKVb0Lwwqg22XIfqaS88HdU5pDwcVmq4pVMaJQgUK-xFEC_sHdfqTV8Z0uBCr9Nik_7xz68FINDYyLhehnvwph9ui-8_WeDgU_h5xrG8H7oY28y2NCtBwXxIadB-K8pHxK2srM8wTCIivdyZS80P0jZMqyxPkt4fO33-GQWvelVmR0bS4Arb3Y4bXnoAMCEao3DTm0bgeNVz39274ippJSQ",
+    n: "7NfiTQcshWgrEdKbHC2e1s92kK-YX7jS3JLFIBpT8f_j_b5y3dQdtFFS4vBoVNQkwep_34x_ihYlhA3QkwaTL2XMSiedjLnubFZBUjs7G0dgGIR3F8A06Bf5KT4g2x1dKVb0Lwwqg22XIfqaS88HdU5pDwcVmq4pVMaJQgUK-xFEC_sHdfqTV8Z0uBCr9Nik_7xz68FINDYyLhehnvwph9ui-8_WeDgU_h5xrG8H7oY28y2NCtBwXxIadB-K8pHxK2srM8wTCIivdyZS80P0jZMqyxPkt4fO33-GQWvelVmR0bS4Arb3Y4bXnoAMCEao3DTm0bgeNVz39274ippJSQ",
     kty: "RSA",
     kid: "0a7dc12664590c957ffaebf7b6718297b864ba91",
   };
