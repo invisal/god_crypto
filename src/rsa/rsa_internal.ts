@@ -25,8 +25,8 @@ export function rsadp(key: RSAKey, c: bigint): bigint {
 
   if (key.dp && key.dq && key.qi && key.q && key.p) {
     // Using the Chinese remainder algorithm
-    const m1 = power_mod(c, key.dp, key.p);
-    const m2 = power_mod(c, key.dq, key.q);
+    const m1 = power_mod(c % key.p, key.dp, key.p);
+    const m2 = power_mod(c % key.q, key.dq, key.q);
 
     let h = 0n;
     if (m1 >= m2) {
