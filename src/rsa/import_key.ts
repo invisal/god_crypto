@@ -148,6 +148,7 @@ function rsa_import_pem_public(key: string): RSAKeyParams {
  */
 function rsa_import_pem(key: string): RSAKeyParams {
   if (typeof key !== "string") throw new TypeError("PEM key must be string");
+  const trimmedKey = key.trim();
 
   const maps: [string, (key: string) => RSAKeyParams][] = [
     ["-----BEGIN RSA PRIVATE KEY-----", rsa_import_pem_private],
@@ -157,7 +158,7 @@ function rsa_import_pem(key: string): RSAKeyParams {
   ];
 
   for (const [prefix, func] of maps) {
-    if (key.indexOf(prefix) === 0) return func(key);
+    if (trimmedKey.indexOf(prefix) === 0) return func(trimmedKey);
   }
 
   throw new TypeError("Unsupported key format");
