@@ -5,12 +5,15 @@ jobs:
   build:
     name: test
     runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        deno-version: [1.4.0, 1.6.0]
     steps:
       - uses: actions/checkout@master
       - name: Setup deno
         uses: denolib/setup-deno@master
         with:
-          deno-version: 1.4.0
+          deno-version: ${{ matrix.deno-version }}
       - name: check fmt
         run: deno fmt --check
       - name: Run tests
