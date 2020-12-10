@@ -1,4 +1,4 @@
-import { createHash } from "./../hash.ts";
+import { digest } from "./../hash.ts";
 import { mgf1 } from "./primitives.ts";
 import { concat, random_bytes, xor } from "./../helper.ts";
 
@@ -16,10 +16,7 @@ export function eme_oaep_encode(
   k: number,
   algorithm: "sha1" | "sha256",
 ): Uint8Array {
-  const labelHash = new Uint8Array(
-    createHash(algorithm).update(label).digest(),
-  );
-
+  const labelHash = new Uint8Array(digest(algorithm, label));
   const ps = new Uint8Array(k - labelHash.length * 2 - 2 - m.length);
   const db = concat(labelHash, ps, [0x01], m);
   const seed = random_bytes(labelHash.length);
@@ -37,9 +34,7 @@ export function eme_oaep_decode(
   k: number,
   algorithm: "sha1" | "sha256",
 ): Uint8Array {
-  const labelHash = new Uint8Array(
-    createHash(algorithm).update(label).digest(),
-  );
+  const labelHash = new Uint8Array(digest(algorithm, label));
   const maskedSeed = c.slice(1, 1 + labelHash.length);
   const maskedDb = c.slice(1 + labelHash.length);
   const seedMask = mgf1(maskedDb, labelHash.length, algorithm);

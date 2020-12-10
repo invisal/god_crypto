@@ -17,7 +17,7 @@ export interface RSAOption {
 
 export interface RSASignOption {
   hash: "sha256";
-  algorithm: "rsassa-pkcs1-v1_5";
+  algorithm: "rsassa-pkcs1-v1_5" | "rsassa-pss";
 }
 
 export interface JSONWebKey {
