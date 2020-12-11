@@ -1,6 +1,6 @@
 import { RawBinary } from "./../binary.ts";
 import { concat } from "./../helper.ts";
-import { createHash } from "../hash.ts";
+import { digest } from "../hash.ts";
 
 /**
  * https://tools.ietf.org/html/rfc4868
@@ -15,7 +15,6 @@ export function hmac(
   data: Uint8Array | string,
 ) {
   const blockSize = 64;
-  const hasher = createHash(algorithm);
 
   const computedData: Uint8Array = typeof data === "string"
     ? new TextEncoder().encode(data)
@@ -27,7 +26,7 @@ export function hmac(
 
   // Hash if key is bigger block size
   if (computedKey.length > blockSize) {
-    computedKey = hasher.update(computedKey).digest();
+    computedKey = digest(algorithm, computedKey);
   }
 
   // Adding zero padding
@@ -44,9 +43,10 @@ export function hmac(
     ipad[i] = computedKey[i] ^ 0x36;
   }
 
-  const output = hasher.update(
-    concat(opad, hasher.update(concat(ipad, computedData)).digest()),
-  ).digest();
+  const output = digest(
+    algorithm,
+    concat(opad, digest(algorithm, concat(ipad, computedData))),
+  );
 
   return new RawBinary(output);
 }

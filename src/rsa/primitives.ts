@@ -1,4 +1,4 @@
-import { createHash } from "./../hash.ts";
+import { digest } from "./../hash.ts";
 
 type HashFunction = (b: Uint8Array) => Uint8Array;
 type HashAlgorithm = "sha1" | "sha256";
@@ -49,7 +49,7 @@ export function mgf1(
       h = hash(new Uint8Array([...seed, ...c]));
     } else {
       h = new Uint8Array(
-        createHash(hash).update(new Uint8Array([...seed, ...c])).digest(),
+        digest(hash, new Uint8Array([...seed, ...c])),
       );
     }
 
