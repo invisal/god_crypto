@@ -3,14 +3,38 @@
 <img src="https://repository-images.githubusercontent.com/285578879/a09a9880-e179-11ea-9b30-42d45ee638c1" width="500px">
 
 ![test](https://github.com/invisal/god-crypto/workflows/test//badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=invisal_god_crypto&metric=alert_status)](https://sonarcloud.io/dashboard?id=invisal_god_crypto)
 
-A pure Javascript/Typescript cryptography implementation for Deno. We will try to use WebCrypto if available, then fallback to WebAssembly implementation if available, otherwise, we will use pure Javascript implementation.
-
-> **NOTE:** `god_crypto` is in very early stage of development. There will be a lot of change and it is not recommended for production.
+A pure Javascript/Typescript cryptography implementation for Deno. We will try to use WebCrypto if available, then fallback pure Javascript implementation.
 
 ## References
 
-### [AES](https://github.com/invisal/god_crypto/wiki/AES) | [RSA](https://github.com/invisal/god_crypto/wiki/RSA) | [HMAC](https://github.com/invisal/god_crypto/wiki/HMAC) | [TOTP](https://github.com/invisal/god_crypto/wiki/TOTP)
+### Supported Algorithms
+
+- [**AES (Advanced Encryption Standard)**](https://github.com/invisal/god_crypto/wiki/AES)
+
+  - Supports Block Ciper Mode: CBC, CFB, and ECB
+
+- [**RSA (Rivest–Shamir–Adleman)**](https://github.com/invisal/god_crypto/wiki/RSA)
+
+  - Supports RSA-PKCS1 v1.5 and RSA-OAEP padding
+  - Supports RSASSA-PSS signature
+  - Supports RSASSA-PKCS1-v1_5 signature
+
+- [**HMAC**](https://github.com/invisal/god_crypto/wiki/HMAC)
+
+### Applications
+
+- [**HOTP (HMAC-based One-time Password)**](https://github.com/invisal/god_crypto/wiki/HOTP)
+- [**TOTP (
+  Time-based One-time Password)**](https://github.com/invisal/god_crypto/wiki/TOTP)
+
+### Ultities
+
+Some useful ultities that you can use
+
+- [encode](https://github.com/invisal/god_crypto/wiki/encode)
+- [BER Writer](https://github.com/invisal/god_crypto/wiki/BER)
 
 Click here for complete document: [Complete Documents](https://github.com/invisal/god_crypto/wiki)
 
@@ -28,26 +52,6 @@ import { RSA }  from "https://deno.land/x/god_crypto/rsa.ts";
 import { TOTP } from "https://deno.land/x/god_crypto/otp.ts";
 import { hmac } from "https://deno.land/x/god_crypto/hmac.ts";
 ```
-
----
-
-## Support Algorithms
-
-|                                    | WebCrypto | WebAssembly | Javascript |
-| ---------------------------------- | :-------: | :---------: | :--------: |
-| **AES**                            |           |             |            |
-| &nbsp;&nbsp;&nbsp;`AES-CBC`        |    ✔️     |     ❌      |     ✔️     |
-| &nbsp;&nbsp;&nbsp;`AES-CFB`        |    ❌     |     ❌      |     ✔️     |
-| &nbsp;&nbsp;&nbsp;`AES-ECB`        |    ❌     |     ❌      |     ✔️     |
-| **RSA**                            |           |             |            |
-| &nbsp;&nbsp;&nbsp;`RSA-PKCS1 v1.5` |    ❌     |     ❌      |     ✔️     |
-| &nbsp;&nbsp;&nbsp;`RSA-OAEP`       |    ✔️     |     ❌      |     ✔️     |
-| **HMAC**                           |           |             |     ✔️     |
-| **TOTP**                           |           |             |     ✔️     |
-
-More algorithm supports is one the way
-<br />
-<br />
 
 ---
 
