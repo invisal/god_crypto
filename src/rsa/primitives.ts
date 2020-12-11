@@ -1,7 +1,5 @@
 import { digest } from "./../hash.ts";
-
-type HashFunction = (b: Uint8Array) => Uint8Array;
-type HashAlgorithm = "sha1" | "sha256";
+import { RSAHashAlgorithm } from "./common.ts";
 
 /**
  * I2OSP converts a nonnegative integer to an octet string of a specified length.
@@ -36,22 +34,17 @@ export function os2ip(m: Uint8Array): bigint {
 export function mgf1(
   seed: Uint8Array,
   length: number,
-  hash: HashFunction | HashAlgorithm,
+  hash: RSAHashAlgorithm,
 ): Uint8Array {
   let counter = 0n;
   let output: number[] = [];
 
   while (output.length < length) {
-    let h;
     const c = i2osp(counter, 4);
 
-    if (typeof hash === "function") {
-      h = hash(new Uint8Array([...seed, ...c]));
-    } else {
-      h = new Uint8Array(
-        digest(hash, new Uint8Array([...seed, ...c])),
-      );
-    }
+    const h = new Uint8Array(
+      digest(hash, new Uint8Array([...seed, ...c])),
+    );
 
     output = [...output, ...h];
     counter++;

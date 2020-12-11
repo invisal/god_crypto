@@ -1,5 +1,6 @@
 import { RawBinary } from "../binary.ts";
 import { digestLength } from "../hash.ts";
+import { RSAHashAlgorithm } from "./common.ts";
 import { emsa_pss_encode, emsa_pss_verify } from "./emsa_pss.ts";
 import { i2osp, os2ip } from "./primitives.ts";
 import { rsaep } from "./rsa_internal.ts";
@@ -8,7 +9,7 @@ import { RSAKey } from "./rsa_key.ts";
 export function rsassa_pss_sign(
   key: RSAKey,
   m: Uint8Array,
-  algorithm: "sha256",
+  algorithm: RSAHashAlgorithm,
 ): RawBinary {
   if (!key.d) throw "Invalid RSA Key";
 
@@ -21,7 +22,7 @@ export function rsassa_pss_verify(
   key: RSAKey,
   m: Uint8Array,
   signature: Uint8Array,
-  algorithm: "sha256",
+  algorithm: RSAHashAlgorithm,
 ): boolean {
   if (!key.e) throw "Invalid RSA Key";
 

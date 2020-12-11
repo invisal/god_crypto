@@ -1,6 +1,7 @@
 import { digest } from "./../hash.ts";
 import { mgf1 } from "./primitives.ts";
 import { concat, random_bytes, xor } from "./../helper.ts";
+import { RSAHashAlgorithm } from "./common.ts";
 
 /**
  * https://tools.ietf.org/html/rfc3447#page-10
@@ -14,7 +15,7 @@ export function eme_oaep_encode(
   label: Uint8Array,
   m: Uint8Array,
   k: number,
-  algorithm: "sha1" | "sha256",
+  algorithm: RSAHashAlgorithm,
 ): Uint8Array {
   const labelHash = new Uint8Array(digest(algorithm, label));
   const ps = new Uint8Array(k - labelHash.length * 2 - 2 - m.length);
@@ -32,7 +33,7 @@ export function eme_oaep_decode(
   label: Uint8Array,
   c: Uint8Array,
   k: number,
-  algorithm: "sha1" | "sha256",
+  algorithm: RSAHashAlgorithm,
 ): Uint8Array {
   const labelHash = new Uint8Array(digest(algorithm, label));
   const maskedSeed = c.slice(1, 1 + labelHash.length);

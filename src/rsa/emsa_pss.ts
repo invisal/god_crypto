@@ -1,12 +1,13 @@
 import { digest } from "../hash.ts";
 import { xor } from "../helper.ts";
+import { RSAHashAlgorithm } from "./common.ts";
 import { mgf1 } from "./primitives.ts";
 
 export function emsa_pss_encode(
   m: Uint8Array,
   emBits: number,
   sLen: number,
-  algorithm: "sha1" | "sha256",
+  algorithm: RSAHashAlgorithm,
 ) {
   const mHash = digest(algorithm, m);
   const hLen = mHash.length;
@@ -39,7 +40,7 @@ export function emsa_pss_verify(
   em: Uint8Array,
   emBits: number,
   sLen: number,
-  algorithm: "sha1" | "sha256",
+  algorithm: RSAHashAlgorithm,
 ): boolean {
   const mHash = digest(algorithm, m);
   const hLen = mHash.length;

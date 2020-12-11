@@ -1,3 +1,5 @@
+export type RSAHashAlgorithm = "sha1" | "sha256" | "sha512";
+
 export interface RSAKeyParams {
   n: bigint;
   e?: bigint;
@@ -11,12 +13,12 @@ export interface RSAKeyParams {
 }
 
 export interface RSAOption {
-  hash: "sha1" | "sha256";
+  hash: RSAHashAlgorithm;
   padding: "oaep" | "pkcs1";
 }
 
 export interface RSASignOption {
-  hash: "sha256";
+  hash: RSAHashAlgorithm;
   algorithm: "rsassa-pkcs1-v1_5" | "rsassa-pss";
 }
 

@@ -5,6 +5,7 @@ import { concat, random_bytes } from "./../helper.ts";
 import { ber_decode, ber_simple } from "./basic_encoding_rule.ts";
 import { RawBinary } from "../binary.ts";
 import { RSAKey } from "./rsa_key.ts";
+import { RSAHashAlgorithm } from "./common.ts";
 
 /**
  * @param n public key modulus
@@ -46,7 +47,7 @@ export function rsa_oaep_encrypt(
   n: bigint,
   e: bigint,
   m: Uint8Array,
-  algorithm: "sha1" | "sha256",
+  algorithm: RSAHashAlgorithm,
 ) {
   const em = eme_oaep_encode(new Uint8Array(0), m, bytes, algorithm);
   const msg = os2ip(em);
@@ -57,7 +58,7 @@ export function rsa_oaep_encrypt(
 export function rsa_oaep_decrypt(
   key: RSAKey,
   c: Uint8Array,
-  algorithm: "sha1" | "sha256",
+  algorithm: RSAHashAlgorithm,
 ) {
   const em = rsadp(key, os2ip(c));
   const m = eme_oaep_decode(
