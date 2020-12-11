@@ -5,8 +5,6 @@ import { RawBinary } from "../binary.ts";
 import { rsa_import_key } from "./import_key.ts";
 import { RSAKey } from "./rsa_key.ts";
 
-type RSAPublicKeyFormat = [[string, null], [[bigint, bigint]]];
-
 function computeMessage(m: Uint8Array | string) {
   return typeof m === "string" ? new TextEncoder().encode(m) : m;
 }
@@ -54,9 +52,9 @@ export class RSA {
     options?: Partial<RSASignOption>,
   ): Promise<boolean> {
     const computedOption: RSASignOption = {
-      ...options,
       algorithm: "rsassa-pkcs1-v1_5",
       hash: "sha256",
+      ...options,
     };
 
     return await PureRSA.verify(
@@ -72,9 +70,9 @@ export class RSA {
     options?: Partial<RSASignOption>,
   ): Promise<RawBinary> {
     const computedOption: RSASignOption = {
-      ...options,
       algorithm: "rsassa-pkcs1-v1_5",
       hash: "sha256",
+      ...options,
     };
 
     return await PureRSA.sign(

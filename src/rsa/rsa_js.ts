@@ -8,8 +8,9 @@ import {
 } from "./rsa_internal.ts";
 import { RawBinary } from "./../binary.ts";
 import type { RSAOption, RSASignOption } from "./common.ts";
-import { createHash } from "../hash.ts";
+import { digest } from "../hash.ts";
 import type { RSAKey } from "./rsa_key.ts";
+import { rsassa_pss_sign, rsassa_pss_verify } from "./rsassa_pss.ts";
 
 export class PureRSA {
   static async encrypt(key: RSAKey, message: Uint8Array, options: RSAOption) {
@@ -48,21 +49,29 @@ export class PureRSA {
   ) {
     if (!key.e) throw "Invalid RSA key";
 
-    return rsa_pkcs1_verify(
-      key,
-      signature,
-      createHash(options.hash).update(message).digest(),
-    );
+    if (options.algorithm === "rsassa-pkcs1-v1_5") {
+      return rsa_pkcs1_verify(
+        key,
+        signature,
+        digest(options.hash, message),
+      );
+    } else {
+      return rsassa_pss_verify(key, message, signature, options.hash);
+    }
   }
 
   static async sign(key: RSAKey, message: Uint8Array, options: RSASignOption) {
     if (!key.d) throw "You need private key to sign the message";
 
-    return rsa_pkcs1_sign(
-      key.length,
-      key.n,
-      key.d,
-      createHash(options.hash).update(message).digest(),
-    );
+    if (options.algorithm === "rsassa-pkcs1-v1_5") {
+      return rsa_pkcs1_sign(
+        key.length,
+        key.n,
+        key.d,
+        digest(options.hash, message),
+      );
+    } else {
+      return rsassa_pss_sign(key, message, options.hash);
+    }
   }
 }
