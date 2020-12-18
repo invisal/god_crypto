@@ -69,6 +69,7 @@ export class PureRSA {
         key.n,
         key.d,
         digest(options.hash, message),
+        options.hash,
       );
     } else {
       return rsassa_pss_sign(key, message, options.hash);

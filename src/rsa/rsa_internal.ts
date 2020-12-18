@@ -138,6 +138,7 @@ export function rsa_pkcs1_sign(
   n: bigint,
   d: bigint,
   message: Uint8Array,
+  algorithm: RSAHashAlgorithm,
 ): RawBinary {
   // deno-fmt-ignore
   const oid = [
@@ -153,10 +154,11 @@ export function rsa_pkcs1_sign(
     0x03,
     0x04,
     0x02,
-    0x01,
+    algorithm === "sha512" ? 0x03 : 0x01, // <--
     0x05,
     0x00,
   ];
+
   const der = [
     0x30,
     message.length + 2 + oid.length,

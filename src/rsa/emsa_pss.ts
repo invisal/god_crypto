@@ -30,7 +30,7 @@ export function emsa_pss_encode(
   const maskedDB = xor(db, dbMask);
 
   const leftMost = 8 * emLen - emBits;
-  maskedDB[0] = maskedDB[0] && (0xff >> leftMost);
+  maskedDB[0] = maskedDB[0] & (0xff >> leftMost);
 
   return new Uint8Array([...maskedDB, ...h, 0xbc]);
 }
@@ -57,7 +57,7 @@ export function emsa_pss_verify(
 
   const dbMask = mgf1(h, emLen - hLen - 1, algorithm);
   const db = xor(maskedDB, dbMask);
-  db[0] = db[0] && (0xff >> leftMost);
+  db[0] = db[0] & (0xff >> leftMost);
 
   for (let i = 1; i < emLen - hLen - sLen - 2; i++) {
     if (db[i] !== 0x00) return false;
