@@ -1,6 +1,6 @@
-import { sha1 } from "https://denopkg.com/chiefbiiko/sha1@v1.0.3/mod.ts";
-import { sha256 } from "https://denopkg.com/chiefbiiko/sha256@v1.0.2/mod.ts";
-import { sha512 } from "https://denopkg.com/chiefbiiko/sha512/mod.ts";
+import { Sha1 } from "https://deno.land/std@0.84.0/hash/sha1.ts";
+import { Sha256 } from "https://deno.land/std@0.84.0/hash/sha256.ts";
+import { Sha512 } from "https://deno.land/std@0.84.0/hash/sha512.ts";
 import { RSAHashAlgorithm } from "./rsa/common.ts";
 
 export function digest(
@@ -8,11 +8,11 @@ export function digest(
   m: Uint8Array,
 ): Uint8Array {
   if (algorithm === "sha1") {
-    return sha1(m) as Uint8Array;
+    return new Uint8Array(new Sha1().update(m).arrayBuffer());
   } else if (algorithm === "sha256") {
-    return sha256(m) as Uint8Array;
+    return new Uint8Array(new Sha256().update(m).arrayBuffer());
   } else if (algorithm === "sha512") {
-    return sha512(m) as Uint8Array;
+    return new Uint8Array(new Sha512().update(m).arrayBuffer());
   }
 
   throw "Unsupport hash algorithm";
