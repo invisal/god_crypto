@@ -57,7 +57,7 @@ function rsa_import_jwk(key: JSONWebKey): RSAKeyParams {
  * @param key
  */
 function rsa_import_pem_cert(key: string): RSAKeyParams {
-  const trimmedKey = key.substr(27, key.length - 53);
+  const trimmedKey = key.substr(27, key.length - 52);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
   ) as RSACertKeyFormat;
@@ -76,7 +76,7 @@ function rsa_import_pem_cert(key: string): RSAKeyParams {
  * @param key PEM encoded key format
  */
 function rsa_import_pem_private(key: string): RSAKeyParams {
-  const trimmedKey = key.substr(31, key.length - 61);
+  const trimmedKey = key.substr(31, key.length - 60);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
   ) as bigint[];
@@ -101,7 +101,7 @@ function rsa_import_pem_private(key: string): RSAKeyParams {
  * @param key PEM encoded key format
  */
 function rsa_import_pem_private_pkcs8(key: string): RSAKeyParams {
-  const trimmedKey = key.substr(27, key.length - 57);
+  const trimmedKey = key.substr(27, key.length - 52);
   const parseWrappedKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
   ) as [number, unknown, Uint8Array];
@@ -128,7 +128,7 @@ function rsa_import_pem_private_pkcs8(key: string): RSAKeyParams {
  * @param key PEM encoded key format
  */
 function rsa_import_pem_public(key: string): RSAKeyParams {
-  const trimmedKey = key.substr(26, key.length - 51);
+  const trimmedKey = key.substr(26, key.length - 50);
   const parseKey = ber_simple(
     ber_decode(base64_to_binary(trimmedKey)),
   ) as RSAPublicKeyFormat;
