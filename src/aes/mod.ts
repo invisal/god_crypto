@@ -29,8 +29,8 @@ export class AES {
     }
 
     // Check if there is native webcrypto
-    const supported = crypto.subtle && "importKey" in crypto.subtle &&
-      "encrypt" in crypto.subtle && "decrypt" in crypto.subtle;
+    const supported = crypto.subtle! && "importKey" in crypto.subtle! &&
+      "encrypt" in crypto.subtle! && "decrypt" in crypto.subtle!;
 
     if (supported && options?.mode === "cbc") {
       this.ciper = new WebCryptoAES(computedKey, computedOption);

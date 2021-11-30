@@ -76,9 +76,9 @@ export class WebCryptoRSA {
 
   static isSupported(options: RSAOption) {
     if (!crypto.subtle) return false;
-    if (!("importKey" in crypto.subtle)) return false;
-    if (!("encrypt" in crypto.subtle)) return false;
-    if (!("decrypt" in crypto.subtle)) return false;
+    if (!("importKey" in crypto.subtle!)) return false;
+    if (!("encrypt" in crypto.subtle!)) return false;
+    if (!("decrypt" in crypto.subtle!)) return false;
     if (options.padding !== "oaep") return false;
     return true;
   }
