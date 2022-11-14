@@ -66,17 +66,17 @@ export class TOTP {
     return `otpauth://totp/${issuer}:${name}?secret=${this.secretInBase32}&period=${this.period}&digits=${this.digits}&algorithm=${this.algorithm.toUpperCase()}&issuer=${issuer}`;
   }
 
-  generate(timestamp = Date.now()): string {
+  async generate(timestamp = Date.now()): Promise<string> {
     const c = Math.floor(timestamp / (this.period * 1000));
     const code = dt(
-      hmac(this.algorithm, this.secret, numberToByte(c)),
+      await hmac(this.algorithm, this.secret, numberToByte(c)),
       this.digits,
     );
 
     return code.toString().padStart(this.digits, "0");
   }
 
-  verify(code: string, timestamp = Date.now()): boolean {
-    return code === this.generate(timestamp);
+  async verify(code: string, timestamp = Date.now()): Promise<boolean> {
+    return code === await this.generate(timestamp);
   }
 }

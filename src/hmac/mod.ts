@@ -9,7 +9,7 @@ import { digest } from "../hash.ts";
  * @param key
  * @param data
  */
-export function hmac(
+export async function hmac(
   algorithm: "sha1" | "sha256",
   key: Uint8Array | string,
   data: Uint8Array | string,
@@ -26,7 +26,7 @@ export function hmac(
 
   // Hash if key is bigger block size
   if (computedKey.length > blockSize) {
-    computedKey = digest(algorithm, computedKey);
+    computedKey = await digest(algorithm, computedKey);
   }
 
   // Adding zero padding
@@ -43,9 +43,9 @@ export function hmac(
     ipad[i] = computedKey[i] ^ 0x36;
   }
 
-  const output = digest(
+  const output = await digest(
     algorithm,
-    concat(opad, digest(algorithm, concat(ipad, computedData))),
+    concat(opad, await digest(algorithm, concat(ipad, computedData))),
   );
 
   return new RawBinary(output);

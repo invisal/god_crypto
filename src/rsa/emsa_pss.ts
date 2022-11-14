@@ -3,13 +3,13 @@ import { xor } from "../helper.ts";
 import { RSAHashAlgorithm } from "./common.ts";
 import { mgf1 } from "./primitives.ts";
 
-export function emsa_pss_encode(
+export async function emsa_pss_encode(
   m: Uint8Array,
   emBits: number,
   sLen: number,
   algorithm: RSAHashAlgorithm,
 ) {
-  const mHash = digest(algorithm, m);
+  const mHash = await digest(algorithm, m);
   const hLen = mHash.length;
   const emLen = Math.ceil(emBits / 8);
 
@@ -22,11 +22,11 @@ export function emsa_pss_encode(
     [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...mHash, ...salt],
   );
 
-  const h = digest(algorithm, m1);
+  const h = await digest(algorithm, m1);
   const ps = new Uint8Array(emLen - sLen - hLen - 2);
   const db = new Uint8Array([...ps, 0x01, ...salt]);
 
-  const dbMask = mgf1(h, emLen - hLen - 1, algorithm);
+  const dbMask = await mgf1(h, emLen - hLen - 1, algorithm);
   const maskedDB = xor(db, dbMask);
 
   const leftMost = 8 * emLen - emBits;
@@ -35,14 +35,14 @@ export function emsa_pss_encode(
   return new Uint8Array([...maskedDB, ...h, 0xbc]);
 }
 
-export function emsa_pss_verify(
+export async function emsa_pss_verify(
   m: Uint8Array,
   em: Uint8Array,
   emBits: number,
   sLen: number,
   algorithm: RSAHashAlgorithm,
-): boolean {
-  const mHash = digest(algorithm, m);
+): Promise<boolean> {
+  const mHash = await digest(algorithm, m);
   const hLen = mHash.length;
   const emLen = Math.ceil(emBits / 8);
 
@@ -55,7 +55,7 @@ export function emsa_pss_verify(
   const leftMost = 8 * emLen - emBits;
   if ((maskedDB[0] >> (8 - leftMost)) != 0) return false;
 
-  const dbMask = mgf1(h, emLen - hLen - 1, algorithm);
+  const dbMask = await mgf1(h, emLen - hLen - 1, algorithm);
   const db = xor(maskedDB, dbMask);
   db[0] = db[0] & (0xff >> leftMost);
 
@@ -70,7 +70,7 @@ export function emsa_pss_verify(
     [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...mHash, ...salt],
   );
 
-  const h1 = digest(algorithm, m1);
+  const h1 = await digest(algorithm, m1);
 
   for (let i = 0; i < hLen; i++) {
     if (h1[i] !== h[i]) return false;

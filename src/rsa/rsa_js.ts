@@ -18,7 +18,7 @@ export class PureRSA {
 
     if (options.padding === "oaep") {
       return new RawBinary(
-        rsa_oaep_encrypt(key.length, key.n, key.e, message, options.hash),
+        await rsa_oaep_encrypt(key.length, key.n, key.e, message, options.hash),
       );
     } else if (options.padding === "pkcs1") {
       return new RawBinary(
@@ -33,7 +33,7 @@ export class PureRSA {
     if (!key.d) throw "Invalid RSA key";
 
     if (options.padding === "oaep") {
-      return new RawBinary(rsa_oaep_decrypt(key, ciper, options.hash));
+      return new RawBinary(await rsa_oaep_decrypt(key, ciper, options.hash));
     } else if (options.padding === "pkcs1") {
       return new RawBinary(rsa_pkcs1_decrypt(key, ciper));
     }
@@ -50,10 +50,10 @@ export class PureRSA {
     if (!key.e) throw "Invalid RSA key";
 
     if (options.algorithm === "rsassa-pkcs1-v1_5") {
-      return rsa_pkcs1_verify(
+      return await rsa_pkcs1_verify(
         key,
         signature,
-        digest(options.hash, message),
+        await digest(options.hash, message),
       );
     } else {
       return rsassa_pss_verify(key, message, signature, options.hash);
@@ -68,7 +68,7 @@ export class PureRSA {
         key.length,
         key.n,
         key.d,
-        digest(options.hash, message),
+        await digest(options.hash, message),
         options.hash,
       );
     } else {
