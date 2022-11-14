@@ -43,26 +43,26 @@ export function rsadp(key: RSAKey, c: bigint): bigint {
   }
 }
 
-export function rsa_oaep_encrypt(
+export async function rsa_oaep_encrypt(
   bytes: number,
   n: bigint,
   e: bigint,
   m: Uint8Array,
   algorithm: RSAHashAlgorithm,
 ) {
-  const em = eme_oaep_encode(new Uint8Array(0), m, bytes, algorithm);
+  const em = await eme_oaep_encode(new Uint8Array(0), m, bytes, algorithm);
   const msg = os2ip(em);
   const c = rsaep(n, e, msg);
   return i2osp(c, bytes);
 }
 
-export function rsa_oaep_decrypt(
+export async function rsa_oaep_decrypt(
   key: RSAKey,
   c: Uint8Array,
   algorithm: RSAHashAlgorithm,
 ) {
   const em = rsadp(key, os2ip(c));
-  const m = eme_oaep_decode(
+  const m = await eme_oaep_decode(
     new Uint8Array(0),
     i2osp(em, key.length),
     key.length,

@@ -31,11 +31,11 @@ export function os2ip(m: Uint8Array): bigint {
  * @param length intended length in octets of the mask
  * @param hash Hash function
  */
-export function mgf1(
+export async function mgf1(
   seed: Uint8Array,
   length: number,
   hash: RSAHashAlgorithm,
-): Uint8Array {
+): Promise<Uint8Array> {
   let counter = 0n;
   let output: number[] = [];
 
@@ -43,7 +43,7 @@ export function mgf1(
     const c = i2osp(counter, 4);
 
     const h = new Uint8Array(
-      digest(hash, new Uint8Array([...seed, ...c])),
+      await digest(hash, new Uint8Array([...seed, ...c])),
     );
 
     output = [...output, ...h];
