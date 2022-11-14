@@ -7,13 +7,15 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        deno-version: [1.28.0, 1.27.0]
+        deno-version: [1.28.0, 1.27.0, 1.11.5]
     steps:
       - uses: actions/checkout@master
       - name: Setup deno
         uses: denolib/setup-deno@master
         with:
           deno-version: ${{ matrix.deno-version }}
+      - name: check fmt
+        run: deno run tests/specs.ts
       - name: check fmt
         run: deno fmt --check
       - name: Run tests
