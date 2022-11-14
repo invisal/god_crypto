@@ -33,7 +33,8 @@ export function rsadp(key: RSAKey, c: bigint): bigint {
     if (m1 >= m2) {
       h = (key.qi * (m1 - m2)) % key.p;
     } else {
-      h = (key.qi * (m1 - m2 + key.p * (key.p / key.q))) % key.p;
+      h = ((key.qi * (m1 - m2 + key.p * (key.p / key.q))) % key.p + key.p) %
+        key.p;
     }
 
     return (m2 + h * key.q) % (key.q * key.p);
