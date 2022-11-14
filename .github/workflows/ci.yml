@@ -14,9 +14,9 @@ jobs:
         uses: denolib/setup-deno@master
         with:
           deno-version: ${{ matrix.deno-version }}
-      - name: check fmt
+      - name: Print the specs
         run: deno run tests/specs.ts
       - name: check fmt
-        run: deno fmt --check
+        run: deno fmt src/ --check
       - name: Run tests
         run: deno test --allow-read --allow-write
