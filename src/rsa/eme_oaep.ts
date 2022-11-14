@@ -5,11 +5,11 @@ import { RSAHashAlgorithm } from "./common.ts";
 
 /**
  * https://tools.ietf.org/html/rfc3447#page-10
- * 
- * @param label 
- * @param m 
- * @param k 
- * @param algorithm 
+ *
+ * @param label
+ * @param m
+ * @param k
+ * @param algorithm
  */
 export function eme_oaep_encode(
   label: Uint8Array,

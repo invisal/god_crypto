@@ -51,7 +51,6 @@ function rsa_import_jwk(key: JSONWebKey): RSAKeyParams {
 }
 
 /**
- *
  * https://tools.ietf.org/html/rfc5280#section-4.1
  *
  * @param key

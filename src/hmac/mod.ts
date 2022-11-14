@@ -4,10 +4,10 @@ import { digest } from "../hash.ts";
 
 /**
  * https://tools.ietf.org/html/rfc4868
- * 
- * @param algorithm 
- * @param key 
- * @param data 
+ *
+ * @param algorithm
+ * @param key
+ * @param data
  */
 export function hmac(
   algorithm: "sha1" | "sha256",

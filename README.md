@@ -1,14 +1,17 @@
 # God Crypto
 
-> **NO LONGER MAINTAIN**
-> I have been very busy lately and can no longer maintain this project and since there is roadmap for Deno for standard crypto library: https://github.com/denoland/deno/issues/11690. I feel there is no longer need for this library.
+> **NO LONGER MAINTAIN** I have been very busy lately and can no longer maintain
+> this project and since there is roadmap for Deno for standard crypto library:
+> https://github.com/denoland/deno/issues/11690. I feel there is no longer need
+> for this library.
 
 <img src="https://repository-images.githubusercontent.com/285578879/a09a9880-e179-11ea-9b30-42d45ee638c1" width="500px">
 
 ![test](https://github.com/invisal/god-crypto/workflows/test//badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=invisal_god_crypto&metric=alert_status)](https://sonarcloud.io/dashboard?id=invisal_god_crypto)
 
-A pure Javascript/Typescript cryptography implementation for Deno. We will try to use WebCrypto if available, then fallback pure Javascript implementation.
+A pure Javascript/Typescript cryptography implementation for Deno. We will try
+to use WebCrypto if available, then fallback pure Javascript implementation.
 
 ## References
 
@@ -39,11 +42,13 @@ Some useful ultities that you can use
 - [encode](https://github.com/invisal/god_crypto/wiki/encode)
 - [BER Writer](https://github.com/invisal/god_crypto/wiki/BER)
 
-Click here for complete document: [Complete Documents](https://github.com/invisal/god_crypto/wiki)
+Click here for complete document:
+[Complete Documents](https://github.com/invisal/god_crypto/wiki)
 
 ## Modules
 
-You can choose to include the whole `god_crypto` implementation or just include module that you need.
+You can choose to include the whole `god_crypto` implementation or just include
+module that you need.
 
 ```
 // Load everything

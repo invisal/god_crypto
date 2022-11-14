@@ -26,7 +26,7 @@ export function os2ip(m: Uint8Array): bigint {
 /**
  * MGF1 is a Mask Generation Function based on a hash function.
  * https://tools.ietf.org/html/rfc3447#appendix-B.2.1
- * 
+ *
  * @param seed seed from which mask is generated, an octet string
  * @param length intended length in octets of the mask
  * @param hash Hash function
