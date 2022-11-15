@@ -2,12 +2,12 @@ name: test
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: test
+  webcryto-support:
+    name: webcryto-support
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        deno-version: [1.28.0, 1.27.0, 1.11.5]
+        deno-version: [1.28.0]
     steps:
       - uses: actions/checkout@master
       - name: Setup deno
@@ -20,5 +20,24 @@ jobs:
         run: deno fmt src/ --check
       - name: Check Lint
         run: deno lint
+      - name: Run tests
+        run: deno test --allow-read --allow-write
+
+  no-webcryto-support:
+    name: webcryto-support
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        deno-version: [1.11.5]
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup deno
+        uses: denolib/setup-deno@master
+        with:
+          deno-version: ${{ matrix.deno-version }}
+      - name: Print the specs
+        run: deno run tests/specs.ts
+      - name: Check fmt
+        run: deno fmt src/ --check
       - name: Run tests
         run: deno test --allow-read --allow-write
