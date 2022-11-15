@@ -22,8 +22,6 @@ type BasicEncodingSimpleValue =
 
 export function ber_decode(
   bytes: Uint8Array,
-  from?: number,
-  to?: number,
 ): BasicEncodingRule {
   return ber_next(bytes);
 }
@@ -34,7 +32,7 @@ function ber_sequence(
   length: number,
 ): BasicEncodingRule[] {
   const end = from + length;
-  let res: BasicEncodingRule[] = [];
+  const res: BasicEncodingRule[] = [];
   let ptr = from;
 
   while (ptr < end) {

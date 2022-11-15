@@ -57,11 +57,11 @@ export function get_key_size(n: bigint): number {
 }
 
 export function base64_to_binary(b: string): Uint8Array {
-  let binaryString = window.atob(b);
-  let len = binaryString.length;
-  let bytes = new Uint8Array(len);
+  const binaryString = atob(b);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
 
-  for (var i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++) {
     bytes[i] = binaryString.charCodeAt(i);
   }
 

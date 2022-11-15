@@ -8,7 +8,7 @@ function base64(m: Uint8Array) {
 export class WebCryptoAES implements AESBase {
   protected key: Uint8Array;
   protected config: BlockCiperConfig;
-  protected wkey: any = null; // WebCrypto Key
+  protected wkey: CryptoKey | null = null; // WebCrypto Key
 
   constructor(
     key: Uint8Array,
@@ -20,7 +20,6 @@ export class WebCryptoAES implements AESBase {
 
   protected async loadKey() {
     if (this.wkey === null) {
-      // @ts-ignore
       this.wkey = await crypto.subtle.importKey(
         "jwk",
         { kty: "oct", k: base64(this.key) },
@@ -37,7 +36,6 @@ export class WebCryptoAES implements AESBase {
     const key = await this.loadKey();
     const option = { name: "AES-CBC", iv: this.config.iv };
 
-    // @ts-ignore
     const data = await crypto.subtle.encrypt(option, key, m);
     return new Uint8Array(data);
   }
@@ -46,7 +44,6 @@ export class WebCryptoAES implements AESBase {
     const key = await this.loadKey();
     const option = { name: "AES-CBC", iv: this.config.iv };
 
-    // @ts-ignore
     const data = await crypto.subtle.decrypt(option, key, m);
     return new Uint8Array(data);
   }

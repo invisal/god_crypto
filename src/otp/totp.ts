@@ -14,7 +14,7 @@ function numberToByte(n: number) {
 }
 
 function dt(h: Uint8Array, digits: number) {
-  let offset = h[h.length - 1] & 0x0f;
+  const offset = h[h.length - 1] & 0x0f;
   const a = h.slice(offset, offset + 4);
 
   const code = ((a[0] & 0x7f) << 24) +

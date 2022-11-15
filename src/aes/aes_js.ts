@@ -720,7 +720,6 @@ class AESBlockCiper implements BlockCiper {
   }
 
   encrypt(m: Uint8Array): Uint8Array {
-    const nb = 4;
     const nr = this.keySchedule.length / 16 - 1;
 
     const state = new Uint8Array(m);
@@ -741,7 +740,6 @@ class AESBlockCiper implements BlockCiper {
   }
 
   decrypt(m: Uint8Array): Uint8Array {
-    const nb = 4;
     const nr = this.keySchedule.length / 16 - 1;
 
     const state = new Uint8Array(m);
@@ -771,10 +769,12 @@ export class PureAES implements AESBase {
     this.config = config;
   }
 
+  // deno-lint-ignore require-await
   async encrypt(m: Uint8Array): Promise<Uint8Array> {
     return BlockCiperOperation.encrypt(m, this.ciper, 16, this.config);
   }
 
+  // deno-lint-ignore require-await
   async decrypt(m: Uint8Array): Promise<Uint8Array> {
     return BlockCiperOperation.decrypt(m, this.ciper, 16, this.config);
   }

@@ -16,7 +16,9 @@ jobs:
           deno-version: ${{ matrix.deno-version }}
       - name: Print the specs
         run: deno run tests/specs.ts
-      - name: check fmt
+      - name: Check fmt
         run: deno fmt src/ --check
+      - name: Check Lint
+        run: deno lint
       - name: Run tests
         run: deno test --allow-read --allow-write

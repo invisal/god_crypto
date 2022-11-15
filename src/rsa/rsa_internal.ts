@@ -122,7 +122,7 @@ export function rsa_pkcs1_verify(
   em = em.slice(psCursor + 1);
 
   // Parsing the BER
-  const ber: [[number, null], Uint8Array] = ber_simple(ber_decode(em)) as any;
+  const ber = ber_simple(ber_decode(em)) as [[number, null], Uint8Array];
   const decryptedMessage = ber[1];
 
   // Comparing the value

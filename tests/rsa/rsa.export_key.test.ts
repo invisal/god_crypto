@@ -12,12 +12,12 @@ const publicKeyRaw = "-----BEGIN PUBLIC KEY-----\n" +
   "bwIDAQAB\n" +
   "-----END PUBLIC KEY-----\n";
 
-Deno.test("RSA - PKCS8 to PKCS8", async () => {
+Deno.test("RSA - PKCS8 to PKCS8", () => {
   assertEquals(RSA.importKey(privateKeyRaw).pem(), privateKeyRaw);
   assertEquals(RSA.importKey(publicKeyRaw).pem(), publicKeyRaw);
 });
 
-Deno.test("RSA - JWK to PKCS8", async () => {
+Deno.test("RSA - JWK to PKCS8", () => {
   const jwk = {
     kty: "RSA",
     n: "rlKJ591_fYCKhdflQSNixBhWutUtW5y3l5vFzTxiKE4e9jykJ0Sr7U6GkwjmvplTV7Wgx4zhRr3tYrMqmQ-s_byRK3f2bb-zXF9-fnKGuP7Fp2oYprW3MKxKgNxjRzmx2x7LaV11dHFQv6oigeV2cyY5XB_GnEWUyHY7fCJIJIRdxuskt-77NAU0vrA_ntbWzFFsPP5xWJ8ns_ojTvwu-LT--fpBD3X1nTUR_LzlRgGxGqPHYRCHvY8B2FSPL8ukqfXI3LkvCM77zeR5lwPqIqDFVWcP6TNsOXccqDtBiA3-A6TS3nGmOu3NbZdefkzJlXq2D0xuW6ql0WqBM0Vubw",
@@ -27,7 +27,7 @@ Deno.test("RSA - JWK to PKCS8", async () => {
   assertEquals(RSA.importKey(jwk).pem(), publicKeyRaw);
 });
 
-Deno.test("RSA - PKCS8 to JWK", async () => {
+Deno.test("RSA - PKCS8 to JWK", () => {
   const jwk = {
     kty: "RSA",
     n: "rlKJ591_fYCKhdflQSNixBhWutUtW5y3l5vFzTxiKE4e9jykJ0Sr7U6GkwjmvplTV7Wgx4zhRr3tYrMqmQ-s_byRK3f2bb-zXF9-fnKGuP7Fp2oYprW3MKxKgNxjRzmx2x7LaV11dHFQv6oigeV2cyY5XB_GnEWUyHY7fCJIJIRdxuskt-77NAU0vrA_ntbWzFFsPP5xWJ8ns_ojTvwu-LT--fpBD3X1nTUR_LzlRgGxGqPHYRCHvY8B2FSPL8ukqfXI3LkvCM77zeR5lwPqIqDFVWcP6TNsOXccqDtBiA3-A6TS3nGmOu3NbZdefkzJlXq2D0xuW6ql0WqBM0Vubw",

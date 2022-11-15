@@ -26,10 +26,10 @@ function getHashFunctionName(hash: string) {
 
 async function createWebCryptoKey(
   key: RSAKey,
-  usage: string,
+  usage: KeyUsage,
   options: RSAOption,
 ) {
-  let jwk: any = {
+  let jwk: JsonWebKey = {
     kty: "RSA",
     n: big_base64(key.n),
     ext: true,
@@ -50,7 +50,6 @@ async function createWebCryptoKey(
     };
   }
 
-  // @ts-ignore
   return await crypto.subtle.importKey(
     "jwk",
     jwk,
@@ -66,8 +65,6 @@ async function createWebCryptoKey(
 export class WebCryptoRSA {
   key: RSAKey;
   options: RSAOption;
-  encryptedKey: any = null;
-  decryptedKey: any = null;
 
   constructor(key: RSAKey, options: RSAOption) {
     this.key = key;
@@ -84,7 +81,6 @@ export class WebCryptoRSA {
   }
 
   static async encrypt(key: RSAKey, m: Uint8Array, options: RSAOption) {
-    // @ts-ignore
     return await crypto.subtle.encrypt(
       { name: "RSA-OAEP" },
       await createWebCryptoKey(key, "encrypt", options),
@@ -93,7 +89,6 @@ export class WebCryptoRSA {
   }
 
   static async decrypt(key: RSAKey, m: Uint8Array, options: RSAOption) {
-    // @ts-ignore
     return await crypto.subtle.decrypt(
       { name: "RSA-OAEP" },
       await createWebCryptoKey(key, "decrypt", options),

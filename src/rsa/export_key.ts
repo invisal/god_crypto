@@ -1,5 +1,4 @@
 import type { RSAKeyParams } from "./common.ts";
-import { bignum_to_byte } from "../helper.ts";
 import { encode } from "./../../src/utility/encode.ts";
 import { BER } from "../utility/asn1.ts";
 
