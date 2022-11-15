@@ -1,6 +1,10 @@
 import { RawBinary } from "./../binary.ts";
-import { concat } from "./../helper.ts";
-import { digest } from "../hash.ts";
+
+const ALGORITHM_MAPPING = {
+  "sha1": "SHA-1",
+  "sha256": "SHA-256",
+  "sha512": "SHA-512",
+};
 
 /**
  * https://tools.ietf.org/html/rfc4868
@@ -10,42 +14,33 @@ import { digest } from "../hash.ts";
  * @param data
  */
 export async function hmac(
-  algorithm: "sha1" | "sha256",
+  algorithm: "sha1" | "sha256" | "sha512",
   key: Uint8Array | string,
   data: Uint8Array | string,
 ) {
-  const blockSize = 64;
-
   const computedData: Uint8Array = typeof data === "string"
     ? new TextEncoder().encode(data)
     : data;
 
-  let computedKey: Uint8Array = typeof key === "string"
+  const computedKey: Uint8Array = typeof key === "string"
     ? new TextEncoder().encode(key)
     : key;
 
-  // Hash if key is bigger block size
-  if (computedKey.length > blockSize) {
-    computedKey = await digest(algorithm, computedKey);
-  }
+  const importedKey = await window.crypto.subtle.importKey(
+    "raw", // raw format of the key - should be Uint8Array
+    computedKey,
+    { // algorithm details
+      name: "HMAC",
+      hash: { name: ALGORITHM_MAPPING[algorithm] },
+    },
+    false, // export = false
+    ["sign", "verify"], // what this key can do
+  );
 
-  // Adding zero padding
-  if (computedKey.length < blockSize) {
-    const tmp = new Uint8Array(blockSize);
-    tmp.set(computedKey, 0);
-    computedKey = tmp;
-  }
-
-  const opad = new Uint8Array(computedKey);
-  const ipad = new Uint8Array(computedKey);
-  for (let i = 0; i < blockSize; i++) {
-    opad[i] = computedKey[i] ^ 0x5c;
-    ipad[i] = computedKey[i] ^ 0x36;
-  }
-
-  const output = await digest(
-    algorithm,
-    concat(opad, await digest(algorithm, concat(ipad, computedData))),
+  const output = await window.crypto.subtle.sign(
+    "HMAC",
+    importedKey,
+    computedData,
   );
 
   return new RawBinary(output);
