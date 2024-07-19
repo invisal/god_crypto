@@ -1,3 +1,5 @@
+import { decode as base64Decode } from "https://deno.land/std/encoding/base64.ts"; // Not sure where we should place imports ;)
+
 export function str2bytes(str: string): Uint8Array {
   const encoder = new TextEncoder();
   return encoder.encode(str);
@@ -57,13 +59,5 @@ export function get_key_size(n: bigint): number {
 }
 
 export function base64_to_binary(b: string): Uint8Array {
-  const binaryString = atob(b);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-
-  return bytes;
+  return base64Decode(b);
 }
